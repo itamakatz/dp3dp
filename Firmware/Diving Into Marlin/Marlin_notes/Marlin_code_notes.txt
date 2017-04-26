@@ -1,0 +1,240 @@
+
+Sources Content
+===============
+
+**NOTE: I starred (***) any source\header I thought is relevant for us.
+
+
+*** - Marlin_main.cpp - reading and parsing gcode commands.
+
+	- blinkm.cpp - Library for controlling a BlinkM over i2c.
+
+	- cardreader.cpp - SD card support.
+
+	- configuration_store.cpp - EEPROM storage (non volatile memory) - used to 
+		store relatively small amounts of data but allowing individual bytes to 
+		be erased and reprogrammed.
+
+	- dac_mcp4728.cpp - Arduino library for MicroChip MCP4728 I2C D/A converter.
+
+	- digipot_mcp4451.cpp - Arduino library for MicroChip MCP4451 I2C.
+
+*** - endstops.cpp - represents a singleton object to manage endstops (home positions).
+
+	- M100_Free_Mem_Chk.cpp - manages the M100 gcode command for initializing and watching free memory.
+
+	- MarlinSerial.cpp - Hardware serial library for Wiring (USB, bluetooth).
+
+***	- mesh_bad_leveling.cpp - A method that can compensate for a non-flat bed (MORE READING).
+
+***	- planner.cpp - Buffer movement commands and manage the acceleration profile plan. Basically 
+		deals with kinematic equations (time, speed, distance, acceleration etc).
+
+*** - planner_bezier.cpp - Compute and buffer movement commands for bezier curves
+
+	- printcounter.cpp - prints printing statistics (during printing?).
+
+***	- qr_solve.cpp - ***itamar, its for you kapara*** - auto bed leveling.
+
+	- Sd2Card.cpp - This file is part of the Arduino Sd2Card Library.
+
+	- SdBaseFile.cpp - ----------------""-----------------
+
+	- SdFatUtil.cpp - ----------------""-----------------
+
+	- SdFile.cpp - ----------------""-----------------
+
+	- SdVolume.cpp - ----------------""-----------------
+
+***	- servo.cpp - Interrupt driven Servo library for Arduino using 16 bit timers.
+		super relevant!!!
+
+***	- stepper.cpp - A singleton object to execute motion plans using stepper motors.
+ 		super relevant!!!
+
+ 	- stepper_dac.cpp - To set stepper current via DAC (D/A converter)
+
+ 	- stepper_indirection.c - stepper motor driver indirection
+  		to allow some stepper functions to be done via SPI/I2c instead of 
+  		direct pin manipulation. 
+
+  	- stopwatch.cpp - A scheduler-like program (like we did in OS ex2).
+
+*** - temperature.cpp - temperature control. 
+
+	- twibus.cpp - experimental I2C bus.
+
+	- ultralcd.cpp - adds support for ultra LCD.
+
+	- utility.cpp - ----------""-----------
+
+	- vector_3.cpp - Vector library for bed leveling.
+
+	- watchdog.cpp - supposed to protect something?
+
+
+Unsourced Headers Content
+=========================
+
+***	- boards.h - defines the various boards that are supported in marlin. usefull.
+
+	- buzzer.h - if we ever think of adding a buzzer (NOT).
+
+	- circularqueue.h - defines a data structure. 
+
+	- Conditionals_LCD.h - Conditionals that need to be set before Configuration_adv.h or pins.h.
+
+	- Conditionals_post.h - Defines that depend on configuration but are not editable.
+
+***	- Configuration.h - Basic settings such as:
+						- Type of electronics
+						- Type of temperature sensor
+						- Printer geometry
+						- Endstop configuration
+						- LCD controller
+						- Extra features
+
+	- Configuration_adv.h - Advanced settings.
+		"Only change these if you know exactly what you're doing."
+
+	- duration_t.h - some timing formats. don't think important.
+
+	- endstop_interrupts.h - mainly to save CPU cycles.
+
+	- enum.h - represents some basic definitions as a number (X_AXIS, E_AXIS etc).
+
+	- fastio.h - includes an avr file - read more.
+
+	- language.h - unless itamar insists of printing messages in spanish, its irrelevat.
+
+	- macros.h - some very usefull macro definitions. no need to be changed.
+
+	- Marlin.h - gcode support functions.
+
+	- MarlinConfig.h - some includes.
+
+***	- nozzle.h - nozzle functions. important!
+
+	- pins.h - pins configurations.  
+
+	- point_t.h - defines a 4-dim vector, for each axis
+
+	- SanityCheck.h - Test configuration values for errors at compile-time.
+
+	- speed_lookuptable.h - basically CPU time.
+
+	- thermistornames.h - some thermistor settings. maybe required.
+
+	- thermistortables.h - some thermistor settings. maybe required.
+
+	- utf_mapper.h - works with language.h, irrelevant.
+
+	
+
+
+
+
+Code Notes
+==========
+
+- in "planner_bezier.cpp" line 185:
+	"FIXME. The following two are wrong, since the parameter t is
+     not linear in the distance." - the same problem we had about
+     bezier (corved, circular) movements.
+
+- The temperature management is done via the "thermalManager" object.
+
+- in "pins.h", why many pins are defined -1 ?
+    to compile the program. the pins that are in use are determined by our configuration setup,
+    so they define the other pins with null values to keep the program running.
+
+- in "Configuration.h" line 1420:
+       "Delay (in microseconds) before the next move will start, to give the servo time to reach its target angle.
+       300ms is a good value but you can try less delay".
+       we are working with servos so this is a good advice.
+
+- in "watchdog.cpp" line 46:
+	// Watchdog timer interrupt, called if main program blocks >1sec and manual reset is enabled.
+    #if ENABLED(WATCHDOG_RESET_MANUAL) .........
+   |- this is quite strange, it seems that watchdog was designed to manage main program timeouts?
+   |  if so, why they commented its define line in "Configuration_adv.h" ?
+   |  from there (line 491):
+   |  // If you have a watchdog reboot in an ArduinoMega2560 then the device will hang forever, as a watchdog reset will leave the watchdog on.
+   |  // The "WATCHDOG_RESET_MANUAL" goes around this by not using the hardware reset.
+   |  //  However, THIS FEATURE IS UNSAFE!, as it will only work if interrupts are disabled. And the code could hang in an interrupt routine with interrupts disabled.
+   |  it seems that arduino mega has the advantage here.
+   '-> it handles timeouts! they don't enable the manual reset because its unsafe, but they use
+       the <avr/wdt.h> implementation.
+
+- how does the program compiles?
+    the only ino file is "Marlin.ino". line 34 says:
+        "All the implementation is done in *.cpp files to get better compatibility with avr-gcc without the Arduino IDE
+         Use this file to help the Arduino IDE find which Arduino libraries are needed and to keep documentation on GCode"
+    so the program starts from "Marlin_main.cpp". how does arduino know to start at the setup and
+    loop functions from there? this is exactly why <Arduino.h> is included!
+
+
+- PSTR and PROGMEM macros are used to save SRAM memory. <avr/pgmspace.h>
+
+
+- "Marlin_main.cpp" line 8844:
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );               // what the f***?
+    seriously, what the f***?
+
+- "printcounter" inherits from "stopwatch".
+    they don't manage interrupts! they print the current printing status and timing.
+
+- why does avr files are included? because they contain the status register (SRAG) which, by
+    manipulating it, can enable interrupts.
+    who uses it? "macros.h" line 35:
+    #define CRITICAL_SECTION_START  unsigned char _sreg = SREG; cli();
+    #define CRITICAL_SECTION_END    SREG = _sreg;
+    --> cli() blocks global interrupt mask (like sigprocmask)
+    --> sei() sets them back
+    note that CRITICAL_SECTION_END does not call sei(), rather it sets back the SREG variable
+    which was blocked by cli(). (which is another way to set global interrupt mask again).
+    with these critical section definitions they define atomic functions.
+    cli and sei are defined in <avr/interrupt.h> which is included in "Marlin.h".
+
+- flow:
+
+    void setup():
+        serial port init, set positions at home, temperature init, stepper init (which also enables interrupts),
+        servo init, lcd init.
+
+    void loop():
+        get commands from serial port (up to 4 which is the buffer size).
+        process_next_command():
+            -get one command from the command queue.
+            -skip the line number (after the letter "N") and the checksum(after the "*")
+            -check the numeric value after the letter ("G"\"M"\"T"). if its not 0..9, raise error.
+            -gcode execution.
+
+- setup clion for arduino: https://www.youtube.com/watch?v=fLnzplsCBis
+
+- configuring marlin: http://marlinfw.org/docs/configuration/configuration.html
+    very important! in "Conditionals_post.h" they define the type of the printer
+    (scara, cartesian, kinematic). line 69.
+    what is kinematic printing? see - https://n-e-r-v-o-u-s.com/shop/line.php?code=15. very cool.
+
+- "SanityCheck.h" - a good header to check what combinations are legal.
+
+
+
+
+- I found how interrupts are handled!
+    by reading lines 247, 248 in "stepper.cpp" I got to these pages:
+        arduino timers - https://arduinodiy.wordpress.com/2012/02/28/timer-interrupts/
+        The Timer/Counter Interrupt Mask Register (TIMSK) - http://web.ics.purdue.edu/~jricha14/Timer_Stuff/TIMSK.htm
+    while cli and sei handle global interrupts, the above handle motor drivers interrupts.
+    all those things are part of AVR code.
+    more on AVR code - http://playground.arduino.cc/Main/AVR
+
+- details about the stepper driver itamar brought me - https://www.reprap-3d-printer.com/product/407-stepper-driver-drv8825
+
+- the temerature lookup table script calculates it by steinhart-hart equation -
+    https://en.wikipedia.org/wiki/Steinhart-Hart_equation
+	
+- marlin steps-to-mm calculations - https://softsolder.com/2013/05/07/m2-vs-marlin-step-mm-calculations/
+  marlin speed calculations (important?) - https://softsolder.com/2013/05/08/m2-vs-marlin-speed-calculations/
