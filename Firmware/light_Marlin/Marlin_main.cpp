@@ -190,7 +190,6 @@
  *
  * ************ Custom codes - This can change to suit future G-code regulations
  * M100 - Watch Free Memory (For Debugging). (Requires M100_FREE_MEMORY_WATCHER)
- * M928 - Start SD logging: "M928 filename.gco". Stop with M29. (Requires SDSUPPORT)
  * M999 - Restart after being stopped by error
  *
  * "T" Codes
@@ -236,7 +235,7 @@
 
 bool Running = true;
 
-uint8_t marlin_debug_flags = DEBUG_NONE;
+uint8_t marlin_debug_flags = DEBUG_DRYRUN;
 
 /**
  * Cartesian Current Position
@@ -572,10 +571,7 @@ inline void sync_plan_position_e() { planner.set_e_position_mm(current_position[
 
 #define SYNC_PLAN_POSITION_KINEMATIC() sync_plan_position()
 
-#if ENABLED(SDSUPPORT)
-	#include "SdFatUtil.h"
-	int freeMemory() { return SdFatUtil::FreeRam(); }
-#else
+
 extern "C" {
 	extern unsigned int __bss_end;
 	extern unsigned int __heap_start;
@@ -590,7 +586,7 @@ extern "C" {
 		return free_memory;
 	}
 }
-#endif //!SDSUPPORT
+
 
 #if ENABLED(DIGIPOT_I2C)
 	extern void digipot_i2c_set_current(int channel, float current);
