@@ -42,11 +42,7 @@
 
 #ifdef USBCON
   #include "HardwareSerial.h"
-  #if ENABLED(BLUETOOTH)
-    #define MYSERIAL bluetoothSerial
-  #else
-    #define MYSERIAL Serial
-  #endif // BLUETOOTH
+  #define MYSERIAL Serial
 #else
   #include "MarlinSerial.h"
   #define MYSERIAL customizedSerial

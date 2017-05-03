@@ -62,8 +62,6 @@
  * G28 - Home one or more axes
  * G29 - Detailed Z probe, probes the bed at 3 or more points.	Will fail if you haven't homed yet.
  * G30 - Single Z probe, probes bed at X Y location (defaults to current XY location)
- * G31 - Dock sled (Z_PROBE_SLED only)
- * G32 - Undock sled (Z_PROBE_SLED only)
  * G38 - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
  * G90 - Use Absolute Coordinates
  * G91 - Use Relative Coordinates
@@ -409,10 +407,6 @@ static uint8_t target_extruder;
 	float z_endstop_adj = 0;
 #endif
 
-#if HAS_Z_SERVO_ENDSTOP
-	const int z_servo_angle[2] = Z_SERVO_ANGLES;
-#endif
-
 #if ENABLED(BARICUDA)
 	int baricuda_valve_pressure = 0;
 	int baricuda_e_to_p_pressure = 0;
@@ -453,9 +447,6 @@ float cartes[XYZ] = { 0 };
 	int meas_delay_cm = MEASUREMENT_DELAY_CM;	//distance delay setting
 #endif
 
-#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-	static bool filament_ran_out = false;
-#endif
 
 #if ENABLED(FILAMENT_CHANGE_FEATURE)
 	FilamentChangeMenuResponse filament_change_menu_response;
@@ -675,16 +666,6 @@ void setup_killpin() {
 	#endif
 }
 
-#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-
-	void setup_filrunoutpin() {
-		SET_INPUT(FIL_RUNOUT_PIN);
-		#if ENABLED(ENDSTOPPULLUP_FIL_RUNOUT)
-			WRITE(FIL_RUNOUT_PIN, HIGH);
-		#endif
-	}
-
-#endif
 
 // Set home pin
 void setup_homepin(void) {
@@ -1291,7 +1272,7 @@ static void clean_up_after_endstop_or_probe_move() {
 
 #endif //HAS_BED_PROBE
 
-#if ENABLED(Z_PROBE_ALLEN_KEY) || ENABLED(Z_PROBE_SLED) || HAS_PROBING_PROCEDURE || ENABLED(NOZZLE_CLEAN_FEATURE) || ENABLED(NOZZLE_PARK_FEATURE)
+#if ENABLED(Z_PROBE_ALLEN_KEY) || HAS_PROBING_PROCEDURE || ENABLED(NOZZLE_CLEAN_FEATURE) || ENABLED(NOZZLE_PARK_FEATURE)
 	static bool axis_unhomed_error(const bool x, const bool y, const bool z) {
 		const bool xx = x && !axis_homed[X_AXIS],
 							 yy = y && !axis_homed[Y_AXIS],
@@ -1310,36 +1291,8 @@ static void clean_up_after_endstop_or_probe_move() {
 	}
 #endif
 
-#if ENABLED(Z_PROBE_SLED)
 
-	#ifndef SLED_DOCKING_OFFSET
-		#define SLED_DOCKING_OFFSET 0
-	#endif
-
-	/**
-	 * Method to dock/undock a sled designed by Charles Bell.
-	 *
-	 * stow[in]		 If false, move to MAX_X and engage the solenoid
-	 *							If true, move to MAX_X and release the solenoid
-	 */
-	static void dock_sled(bool stow) {
-		#if ENABLED(DEBUG_LEVELING_FEATURE)
-			if (DEBUGGING(LEVELING)) {
-				SERIAL_ECHOPAIR("dock_sled(", stow);
-				SERIAL_CHAR(')');
-				SERIAL_EOL;
-			}
-		#endif
-
-		// Dock sled a bit closer to ensure proper capturing
-		do_blocking_move_to_x(X_MAX_POS + SLED_DOCKING_OFFSET - ((stow) ? 1 : 0));
-
-		#if PIN_EXISTS(SLED)
-			digitalWrite(SLED_PIN, !stow); // switch solenoid
-		#endif
-	}
-
-#elif ENABLED(Z_PROBE_ALLEN_KEY)
+#if ENABLED(Z_PROBE_ALLEN_KEY)
 
 	void run_deploy_moves_script() {
 		#if defined(Z_PROBE_ALLEN_KEY_DEPLOY_1_X) || defined(Z_PROBE_ALLEN_KEY_DEPLOY_1_Y) || defined(Z_PROBE_ALLEN_KEY_DEPLOY_1_Z)
@@ -1513,19 +1466,6 @@ static void clean_up_after_endstop_or_probe_move() {
 	#define DEPLOY_PROBE() set_probe_deployed(true)
 	#define STOW_PROBE() set_probe_deployed(false)
 
-	#if ENABLED(BLTOUCH)
-		FORCE_INLINE void set_bltouch_deployed(const bool &deploy) {
-			servo[Z_ENDSTOP_SERVO_NR].move(deploy ? BLTOUCH_DEPLOY : BLTOUCH_STOW);
-			#if ENABLED(DEBUG_LEVELING_FEATURE)
-				if (DEBUGGING(LEVELING)) {
-					SERIAL_ECHOPAIR("set_bltouch_deployed(", deploy);
-					SERIAL_CHAR(')');
-					SERIAL_EOL;
-				}
-			#endif
-		}
-	#endif
-
 	// returns false for ok and true for failure
 	static bool set_probe_deployed(bool deploy) {
 
@@ -1541,12 +1481,7 @@ static void clean_up_after_endstop_or_probe_move() {
 		// Make room for probe
 		do_probe_raise(_Z_CLEARANCE_DEPLOY_PROBE);
 
-		// When deploying make sure BLTOUCH is not already triggered
-		#if ENABLED(BLTOUCH)
-			if (deploy && TEST_BLTOUCH()) { stop(); return true; }
-		#elif ENABLED(Z_PROBE_SLED)
-			if (axis_unhomed_error(true, false, false)) { stop(); return true; }
-		#elif ENABLED(Z_PROBE_ALLEN_KEY)
+		#if ENABLED(Z_PROBE_ALLEN_KEY)
 			if (axis_unhomed_error(true, true,	true )) { stop(); return true; }
 		#endif
 
@@ -1565,11 +1500,8 @@ static void clean_up_after_endstop_or_probe_move() {
 																										 // otherwise an Allen-Key probe can't be stowed.
 		#endif
 
-				#if ENABLED(Z_PROBE_SLED)
 
-					dock_sled(!deploy);
-
-				#elif HAS_Z_SERVO_ENDSTOP && DISABLED(BLTOUCH)
+				#if HAS_Z_SERVO_ENDSTOP
 
 					servo[Z_ENDSTOP_SERVO_NR].move(z_servo_angle[deploy ? 0 : 1]);
 
@@ -1606,18 +1538,8 @@ static void clean_up_after_endstop_or_probe_move() {
 			if (DEBUGGING(LEVELING)) DEBUG_POS(">>> do_probe_move", current_position);
 		#endif
 
-		// Deploy BLTouch at the start of any probe
-		#if ENABLED(BLTOUCH)
-			set_bltouch_deployed(true);
-		#endif
-
 		// Move down until probe triggered
 		do_blocking_move_to_z(LOGICAL_Z_POSITION(z), MMM_TO_MMS(fr_mm_m));
-
-		// Retract BLTouch immediately after a probe
-		#if ENABLED(BLTOUCH)
-			set_bltouch_deployed(false);
-		#endif
 
 		// Clear endstop flags
 		endstops.hit_on_purpose();
@@ -1644,29 +1566,12 @@ static void clean_up_after_endstop_or_probe_move() {
 		// Prevent stepper_inactive_time from running out and EXTRUDER_RUNOUT_PREVENT from extruding
 		refresh_cmd_timeout();
 
-		#if ENABLED(PROBE_DOUBLE_TOUCH)
-
-			// Do a first probe at the fast speed
-			do_probe_move(-(Z_MAX_LENGTH) - 10, Z_PROBE_SPEED_FAST);
-
-			#if ENABLED(DEBUG_LEVELING_FEATURE)
-				float first_probe_z = current_position[Z_AXIS];
-				if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPAIR("1st Probe Z:", first_probe_z);
-			#endif
-
-			// move up by the bump distance
-			do_blocking_move_to_z(current_position[Z_AXIS] + home_bump_mm(Z_AXIS), MMM_TO_MMS(Z_PROBE_SPEED_FAST));
-
-		#else
-
-			// If the nozzle is above the travel height then
-			// move down quickly before doing the slow probe
-			float z = LOGICAL_Z_POSITION(Z_CLEARANCE_BETWEEN_PROBES);
-			if (zprobe_zoffset < 0) z -= zprobe_zoffset;
-			if (z < current_position[Z_AXIS])
-				do_blocking_move_to_z(z, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
-
-		#endif
+        // If the nozzle is above the travel height then
+        // move down quickly before doing the slow probe
+        float z = LOGICAL_Z_POSITION(Z_CLEARANCE_BETWEEN_PROBES);
+        if (zprobe_zoffset < 0) z -= zprobe_zoffset;
+        if (z < current_position[Z_AXIS])
+            do_blocking_move_to_z(z, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
 
 		// move down slowly to find bed
 		do_probe_move(-(Z_MAX_LENGTH) - 10, Z_PROBE_SPEED_SLOW);
@@ -1675,13 +1580,6 @@ static void clean_up_after_endstop_or_probe_move() {
 			if (DEBUGGING(LEVELING)) DEBUG_POS("<<< run_z_probe", current_position);
 		#endif
 
-		// Debug: compare probe heights
-		#if ENABLED(PROBE_DOUBLE_TOUCH) && ENABLED(DEBUG_LEVELING_FEATURE)
-			if (DEBUGGING(LEVELING)) {
-				SERIAL_ECHOPAIR("2nd Probe Z:", current_position[Z_AXIS]);
-				SERIAL_ECHOLNPAIR(" Discrepancy:", first_probe_z - current_position[Z_AXIS]);
-			}
-		#endif
 		return current_position[Z_AXIS];
 	}
 
@@ -2038,11 +1936,6 @@ static void do_homing_move(const AxisEnum axis, float distance, float fr_mm_s=0.
 		}
 	#endif
 
-	#if HOMING_Z_WITH_PROBE && ENABLED(BLTOUCH)
-		bool deploy_bltouch = (axis == Z_AXIS && distance < 0);
-		if (deploy_bltouch) set_bltouch_deployed(true);
-	#endif
-
 	// Tell the planner we're at Z=0
 	current_position[axis] = 0;
 
@@ -2052,10 +1945,6 @@ static void do_homing_move(const AxisEnum axis, float distance, float fr_mm_s=0.
 
 
 	stepper.synchronize();
-
-	#if HOMING_Z_WITH_PROBE && ENABLED(BLTOUCH)
-		if (deploy_bltouch) set_bltouch_deployed(false);
-	#endif
 
 	endstops.hit_on_purpose();
 
@@ -2450,16 +2339,7 @@ inline void gcode_G4() {
 	 * G11 - Recover filament according to settings of M208
 	 */
 	inline void gcode_G10_G11(bool doRetract=false) {
-		#if EXTRUDERS > 1
-			if (doRetract) {
-				retracted_swap[active_extruder] = (code_seen('S') && code_value_bool()); // checks for swap retract argument
-			}
-		#endif
-		retract(doRetract
-		 #if EXTRUDERS > 1
-			, retracted_swap[active_extruder]
-		 #endif
-		);
+		retract(doRetract);
 	}
 
 #endif //FWRETRACT
@@ -2538,14 +2418,8 @@ inline void gcode_G4() {
 		#endif
 
 		SERIAL_ECHOPGM("Probe: ");
-		#if ENABLED(FIX_MOUNTED_PROBE)
-			SERIAL_ECHOLNPGM("FIX_MOUNTED_PROBE");
-		#elif ENABLED(BLTOUCH)
-			SERIAL_ECHOLNPGM("BLTOUCH");
-		#elif HAS_Z_SERVO_ENDSTOP
+		#if HAS_Z_SERVO_ENDSTOP
 			SERIAL_ECHOLNPGM("SERVO PROBE");
-		#elif ENABLED(Z_PROBE_SLED)
-			SERIAL_ECHOLNPGM("Z_PROBE_SLED");
 		#elif ENABLED(Z_PROBE_ALLEN_KEY)
 			SERIAL_ECHOLNPGM("Z_PROBE_ALLEN_KEY");
 		#else
@@ -2830,19 +2704,7 @@ inline void gcode_G28() {
 		report_current_position();
 	}
 
-	#if ENABLED(Z_PROBE_SLED)
 
-		/**
-		 * G31: Deploy the Z probe
-		 */
-		inline void gcode_G31() { DEPLOY_PROBE(); }
-
-		/**
-		 * G32: Stow the Z probe
-		 */
-		inline void gcode_G32() { STOW_PROBE(); }
-
-	#endif // Z_PROBE_SLED
 
 #endif // HAS_BED_PROBE
 
@@ -4426,9 +4288,6 @@ inline void gcode_M206() {
 		if (code_seen('S')) retract_length = code_value_axis_units(E_AXIS);
 		if (code_seen('F')) retract_feedrate_mm_s = MMM_TO_MMS(code_value_axis_units(E_AXIS));
 		if (code_seen('Z')) retract_zlift = code_value_axis_units(Z_AXIS);
-		#if EXTRUDERS > 1
-			if (code_seen('W')) retract_length_swap = code_value_axis_units(E_AXIS);
-		#endif
 	}
 
 	/**
@@ -4441,9 +4300,6 @@ inline void gcode_M206() {
 	inline void gcode_M208() {
 		if (code_seen('S')) retract_recover_length = code_value_axis_units(E_AXIS);
 		if (code_seen('F')) retract_recover_feedrate_mm_s = MMM_TO_MMS(code_value_axis_units(E_AXIS));
-		#if EXTRUDERS > 1
-			if (code_seen('W')) retract_recover_length_swap = code_value_axis_units(E_AXIS);
-		#endif
 	}
 
 	/**
@@ -5124,10 +4980,6 @@ inline void gcode_M503() {
 
 		stepper.synchronize();
 
-		#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-			filament_ran_out = false;
-		#endif
-
 		// Show status screen
 		lcd_filament_change_show_message(FILAMENT_CHANGE_MESSAGE_STATUS);
 	}
@@ -5442,17 +5294,7 @@ void process_next_command() {
 					gcode_G30();
 					break;
 
-				#if ENABLED(Z_PROBE_SLED)
 
-						case 31: // G31: dock the sled
-							gcode_G31();
-							break;
-
-						case 32: // G32: undock the sled
-							gcode_G32();
-							break;
-
-				#endif // Z_PROBE_SLED
 			#endif // HAS_BED_PROBE
 
 			#if ENABLED(G38_PROBE_TARGET)
@@ -6396,17 +6238,6 @@ void prepare_move_to_destination() {
 
 #endif
 
-#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-
-	void handle_filament_runout() {
-		if (!filament_ran_out) {
-			filament_ran_out = true;
-			enqueue_and_echo_commands_P(PSTR(FILAMENT_RUNOUT_SCRIPT));
-			stepper.synchronize();
-		}
-	}
-
-#endif // FILAMENT_RUNOUT_SENSOR
 
 #if ENABLED(FAST_PWM_FAN)
 
@@ -6514,10 +6345,6 @@ void disable_all_steppers() {
  */
 void manage_inactivity(bool ignore_stepper_queue/*=false*/) {
 
-	#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-		if ((IS_SD_PRINTING || print_job_timer.isRunning()) && (READ(FIL_RUNOUT_PIN) == FIL_RUNOUT_INVERTING))
-			handle_filament_runout();
-	#endif
 
 	if (commands_in_queue < BUFSIZE) get_available_commands();
 
@@ -6759,9 +6586,6 @@ void setup() {
 		MCUCR = 0x80;
 	#endif
 
-	#if ENABLED(FILAMENT_RUNOUT_SENSOR)
-		setup_filrunoutpin();
-	#endif
 
 	setup_killpin();
 
@@ -6846,11 +6670,6 @@ void setup() {
 	#if ENABLED(DIGIPOT_I2C)
 		digipot_i2c_init();
 	#endif
-
-
-	#if ENABLED(Z_PROBE_SLED) && PIN_EXISTS(SLED)
-		OUT_WRITE(SLED_PIN, LOW); // turn it off
-	#endif // Z_PROBE_SLED
 
 	setup_homepin();
 

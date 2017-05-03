@@ -125,7 +125,6 @@
 #include "endstops.h"
 #include "planner.h"
 #include "temperature.h"
-//#include "ultralcd.h"
 #include "configuration_store.h"
 
 #if ENABLED(MESH_BED_LEVELING)
@@ -165,12 +164,6 @@ void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size) {
 void Config_Postprocess() {
   // steps per s2 needs to be updated to agree with units per s2
   planner.reset_acceleration_rates();
-
-  // Make sure delta kinematics are updated before refreshing the
-  // planner position so the stepper counts will be set correctly.
-  #if ENABLED(DELTA)
-    recalc_delta_settings(delta_radius, delta_diagonal_rod);
-  #endif
 
   // Refresh steps_to_mm with the reciprocal of axis_steps_per_mm
   // and init stepper.count[], planner.position[] with current_position
@@ -256,15 +249,7 @@ void Config_Postprocess() {
     EEPROM_WRITE(zprobe_zoffset);
 
     // 9 floats for DELTA / Z_DUAL_ENDSTOPS
-    #if ENABLED(DELTA)
-      EEPROM_WRITE(endstop_adj);               // 3 floats
-      EEPROM_WRITE(delta_radius);              // 1 float
-      EEPROM_WRITE(delta_diagonal_rod);        // 1 float
-      EEPROM_WRITE(delta_segments_per_second); // 1 float
-      EEPROM_WRITE(delta_diagonal_rod_trim_tower_1);  // 1 float
-      EEPROM_WRITE(delta_diagonal_rod_trim_tower_2);  // 1 float
-      EEPROM_WRITE(delta_diagonal_rod_trim_tower_3);  // 1 float
-    #elif ENABLED(Z_DUAL_ENDSTOPS)
+    #if ENABLED(Z_DUAL_ENDSTOPS)
       EEPROM_WRITE(z_endstop_adj);            // 1 float
       dummy = 0.0f;
       for (uint8_t q = 8; q--;) EEPROM_WRITE(dummy);
@@ -442,15 +427,7 @@ void Config_Postprocess() {
       #endif
       EEPROM_READ(zprobe_zoffset);
 
-      #if ENABLED(DELTA)
-        EEPROM_READ(endstop_adj);                // 3 floats
-        EEPROM_READ(delta_radius);               // 1 float
-        EEPROM_READ(delta_diagonal_rod);         // 1 float
-        EEPROM_READ(delta_segments_per_second);  // 1 float
-        EEPROM_READ(delta_diagonal_rod_trim_tower_1);  // 1 float
-        EEPROM_READ(delta_diagonal_rod_trim_tower_2);  // 1 float
-        EEPROM_READ(delta_diagonal_rod_trim_tower_3);  // 1 float
-      #elif ENABLED(Z_DUAL_ENDSTOPS)
+      #if ENABLED(Z_DUAL_ENDSTOPS)
         EEPROM_READ(z_endstop_adj);
         dummy = 0.0f;
         for (uint8_t q=8; q--;) EEPROM_READ(dummy);
@@ -588,23 +565,6 @@ void Config_ResetDefault() {
   planner.max_jerk[Z_AXIS] = DEFAULT_ZJERK;
   planner.max_jerk[E_AXIS] = DEFAULT_EJERK;
   home_offset[X_AXIS] = home_offset[Y_AXIS] = home_offset[Z_AXIS] = 0;
-
-  #if HOTENDS > 1
-    constexpr float tmp4[XYZ][HOTENDS] = {
-      HOTEND_OFFSET_X,
-      HOTEND_OFFSET_Y
-      #ifdef HOTEND_OFFSET_Z
-        , HOTEND_OFFSET_Z
-      #else
-        , { 0 }
-      #endif
-    };
-    static_assert(
-      tmp4[X_AXIS][0] == 0 && tmp4[Y_AXIS][0] == 0 && tmp4[Z_AXIS][0] == 0,
-      "Offsets for the first hotend must be 0.0."
-    );
-    LOOP_XYZ(i) HOTEND_LOOP() hotend_offset[i][e] = tmp4[i][e];
-  #endif
 
   #if ENABLED(MESH_BED_LEVELING)
     mbl.reset();
