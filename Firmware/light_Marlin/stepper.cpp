@@ -63,19 +63,10 @@ block_t* Stepper::current_block = NULL;  // A pointer to the block currently bei
   bool Stepper::abort_on_endstop_hit = false;
 #endif
 
-#if ENABLED(Z_DUAL_ENDSTOPS)
-  bool Stepper::performing_homing = false;
-#endif
-
 // private:
 
 unsigned char Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
 unsigned int Stepper::cleaning_buffer_counter = 0;
-
-#if ENABLED(Z_DUAL_ENDSTOPS)
-  bool Stepper::locked_z_motor = false;
-  bool Stepper::locked_z2_motor = false;
-#endif
 
 long Stepper::counter_X = 0,
      Stepper::counter_Y = 0,
@@ -108,78 +99,23 @@ long Stepper::acceleration_time, Stepper::deceleration_time;
 volatile long Stepper::count_position[NUM_AXIS] = { 0 };
 volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1 };
 
-#if ENABLED(MIXING_EXTRUDER)
-  long Stepper::counter_m[MIXING_STEPPERS];
-#endif
-
 unsigned short Stepper::acc_step_rate; // needed for deceleration start point
 uint8_t Stepper::step_loops, Stepper::step_loops_nominal;
 unsigned short Stepper::OCR1A_nominal;
 
 volatile long Stepper::endstops_trigsteps[XYZ];
 
-#if ENABLED(X_DUAL_STEPPER_DRIVERS)
-  #define X_APPLY_DIR(v,Q) do{ X_DIR_WRITE(v); X2_DIR_WRITE((v) != INVERT_X2_VS_X_DIR); }while(0)
-  #define X_APPLY_STEP(v,Q) do{ X_STEP_WRITE(v); X2_STEP_WRITE(v); }while(0)
-#elif ENABLED(DUAL_X_CARRIAGE)
-  #define X_APPLY_DIR(v,ALWAYS) \
-    if (extruder_duplication_enabled || ALWAYS) { \
-      X_DIR_WRITE(v); \
-      X2_DIR_WRITE(v); \
-    } \
-    else { \
-      if (current_block->active_extruder) X2_DIR_WRITE(v); else X_DIR_WRITE(v); \
-    }
-  #define X_APPLY_STEP(v,ALWAYS) \
-    if (extruder_duplication_enabled || ALWAYS) { \
-      X_STEP_WRITE(v); \
-      X2_STEP_WRITE(v); \
-    } \
-    else { \
-      if (current_block->active_extruder != 0) X2_STEP_WRITE(v); else X_STEP_WRITE(v); \
-    }
-#else
-  #define X_APPLY_DIR(v,Q) X_DIR_WRITE(v)
-  #define X_APPLY_STEP(v,Q) X_STEP_WRITE(v)
-#endif
+#define X_APPLY_DIR(v,Q) X_DIR_WRITE(v)
+#define X_APPLY_STEP(v,Q) X_STEP_WRITE(v)
 
-#if ENABLED(Y_DUAL_STEPPER_DRIVERS)
-  #define Y_APPLY_DIR(v,Q) do{ Y_DIR_WRITE(v); Y2_DIR_WRITE((v) != INVERT_Y2_VS_Y_DIR); }while(0)
-  #define Y_APPLY_STEP(v,Q) do{ Y_STEP_WRITE(v); Y2_STEP_WRITE(v); }while(0)
-#else
-  #define Y_APPLY_DIR(v,Q) Y_DIR_WRITE(v)
-  #define Y_APPLY_STEP(v,Q) Y_STEP_WRITE(v)
-#endif
+#define Y_APPLY_DIR(v,Q) Y_DIR_WRITE(v)
+#define Y_APPLY_STEP(v,Q) Y_STEP_WRITE(v)
 
-#if ENABLED(Z_DUAL_STEPPER_DRIVERS)
-  #define Z_APPLY_DIR(v,Q) do{ Z_DIR_WRITE(v); Z2_DIR_WRITE(v); }while(0)
-  #if ENABLED(Z_DUAL_ENDSTOPS)
-    #define Z_APPLY_STEP(v,Q) \
-    if (performing_homing) { \
-      if (Z_HOME_DIR < 0) { \
-        if (!(TEST(endstops.old_endstop_bits, Z_MIN) && (count_direction[Z_AXIS] < 0)) && !locked_z_motor) Z_STEP_WRITE(v); \
-        if (!(TEST(endstops.old_endstop_bits, Z2_MIN) && (count_direction[Z_AXIS] < 0)) && !locked_z2_motor) Z2_STEP_WRITE(v); \
-      } \
-      else { \
-        if (!(TEST(endstops.old_endstop_bits, Z_MAX) && (count_direction[Z_AXIS] > 0)) && !locked_z_motor) Z_STEP_WRITE(v); \
-        if (!(TEST(endstops.old_endstop_bits, Z2_MAX) && (count_direction[Z_AXIS] > 0)) && !locked_z2_motor) Z2_STEP_WRITE(v); \
-      } \
-    } \
-    else { \
-      Z_STEP_WRITE(v); \
-      Z2_STEP_WRITE(v); \
-    }
-  #else
-    #define Z_APPLY_STEP(v,Q) do{ Z_STEP_WRITE(v); Z2_STEP_WRITE(v); }while(0)
-  #endif
-#else
-  #define Z_APPLY_DIR(v,Q) Z_DIR_WRITE(v)
-  #define Z_APPLY_STEP(v,Q) Z_STEP_WRITE(v)
-#endif
+#define Z_APPLY_DIR(v,Q) Z_DIR_WRITE(v)
+#define Z_APPLY_STEP(v,Q) Z_STEP_WRITE(v)
 
-#if DISABLED(MIXING_EXTRUDER)
-  #define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
-#endif
+#define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
+
 
 // intRes = longIn1 * longIn2 >> 24
 // uses:
@@ -356,11 +292,6 @@ void Stepper::isr() {
       // Initialize Bresenham counters to 1/2 the ceiling
       counter_X = counter_Y = counter_Z = counter_E = -(current_block->step_event_count >> 1);
 
-      #if ENABLED(MIXING_EXTRUDER)
-        MIXING_STEPPERS_LOOP(i)
-          counter_m[i] = -(current_block->mix_event_count[i] >> 1);
-      #endif
-
       step_events_completed = 0;
 
 
@@ -495,19 +426,7 @@ void Stepper::isr() {
 
     // For non-advance use linear interpolation for E also
     #if DISABLED(ADVANCE) && DISABLED(LIN_ADVANCE)
-      #if ENABLED(MIXING_EXTRUDER)
-        // Keep updating the single E axis
-        counter_E += current_block->steps[E_AXIS];
-        // Tick the counters used for this mix
-        MIXING_STEPPERS_LOOP(j) {
-          // Step mixing steppers (proportionally)
-          counter_m[j] += current_block->steps[E_AXIS];
-          // Step when the counter goes over zero
-          if (counter_m[j] > 0) En_STEP_WRITE(j, !INVERT_E_STEP_PIN);
-        }
-      #else // !MIXING_EXTRUDER
-        PULSE_START(E);
-      #endif
+      PULSE_START(E);
     #endif // !ADVANCE && !LIN_ADVANCE
 
     // For a minimum pulse time wait before stopping pulses
@@ -526,21 +445,7 @@ void Stepper::isr() {
     #endif
 
     #if DISABLED(ADVANCE) && DISABLED(LIN_ADVANCE)
-      #if ENABLED(MIXING_EXTRUDER)
-        // Always step the single E axis
-        if (counter_E > 0) {
-          counter_E -= current_block->step_event_count;
-          count_position[E_AXIS] += count_direction[E_AXIS];
-        }
-        MIXING_STEPPERS_LOOP(j) {
-          if (counter_m[j] > 0) {
-            counter_m[j] -= current_block->mix_event_count[j];
-            En_STEP_WRITE(j, INVERT_E_STEP_PIN);
-          }
-        }
-      #else // !MIXING_EXTRUDER
-        PULSE_STOP(E);
-      #endif
+      PULSE_STOP(E);
     #endif // !ADVANCE && !LIN_ADVANCE
 
     if (++step_events_completed >= current_block->step_event_count) {
@@ -894,26 +799,14 @@ void Stepper::init() {
 
   // Init Step Pins
   #if HAS_X_STEP
-    #if ENABLED(X_DUAL_STEPPER_DRIVERS) || ENABLED(DUAL_X_CARRIAGE)
-      X2_STEP_INIT;
-      X2_STEP_WRITE(INVERT_X_STEP_PIN);
-    #endif
     AXIS_INIT(x, X, X);
   #endif
 
   #if HAS_Y_STEP
-    #if ENABLED(Y_DUAL_STEPPER_DRIVERS)
-      Y2_STEP_INIT;
-      Y2_STEP_WRITE(INVERT_Y_STEP_PIN);
-    #endif
     AXIS_INIT(y, Y, Y);
   #endif
 
   #if HAS_Z_STEP
-    #if ENABLED(Z_DUAL_STEPPER_DRIVERS)
-      Z2_STEP_INIT;
-      Z2_STEP_WRITE(INVERT_Z_STEP_PIN);
-    #endif
     AXIS_INIT(z, Z, Z);
   #endif
 
@@ -1168,40 +1061,7 @@ void Stepper::report_positions() {
         break;
 
       case Z_AXIS: {
-
-        #if DISABLED(DELTA)
-
-          BABYSTEP_AXIS(z, Z, BABYSTEP_INVERT_Z);
-
-        #else // DELTA
-
-          bool z_direction = direction ^ BABYSTEP_INVERT_Z;
-
-          enable_x();
-          enable_y();
-          enable_z();
-          uint8_t old_x_dir_pin = X_DIR_READ,
-                  old_y_dir_pin = Y_DIR_READ,
-                  old_z_dir_pin = Z_DIR_READ;
-          //setup new step
-          X_DIR_WRITE(INVERT_X_DIR ^ z_direction);
-          Y_DIR_WRITE(INVERT_Y_DIR ^ z_direction);
-          Z_DIR_WRITE(INVERT_Z_DIR ^ z_direction);
-          //perform step
-          X_STEP_WRITE(!INVERT_X_STEP_PIN);
-          Y_STEP_WRITE(!INVERT_Y_STEP_PIN);
-          Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
-          delayMicroseconds(2);
-          X_STEP_WRITE(INVERT_X_STEP_PIN);
-          Y_STEP_WRITE(INVERT_Y_STEP_PIN);
-          Z_STEP_WRITE(INVERT_Z_STEP_PIN);
-          //get old pin state back.
-          X_DIR_WRITE(old_x_dir_pin);
-          Y_DIR_WRITE(old_y_dir_pin);
-          Z_DIR_WRITE(old_z_dir_pin);
-
-        #endif
-
+        BABYSTEP_AXIS(z, Z, BABYSTEP_INVERT_Z);
       } break;
 
       default: break;
