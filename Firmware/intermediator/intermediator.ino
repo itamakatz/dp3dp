@@ -2,8 +2,8 @@
 #define ENABLED 0     // for stepper driver A4988 - enable with low signal
 #define DISABLED 1
 
-const int RECIEVE_ENABLE = 7; // connected to Z_ENABLE_PIN 62 of the mega
-const int RECIEVE_STEP = 2;    // connected to Z_STEP_PIN 46 of the mega
+const int RECIEVE_ENABLE = 2; // connected to Z_ENABLE_PIN 62 of the mega
+const int RECIEVE_STEP = 3;    // connected to Z_STEP_PIN 46 of the mega
 const int RECIEVE_DIR = 4;     // connected to Z_DIR_PIN 48 of the mega
 
 const int PASS_ENABLE = 8;    // connected to ENABLE pin 2 of the stepper driver 
@@ -16,16 +16,20 @@ volatile byte state = DISABLED;
 
 
 void toggle_enabled_pin(){
+	cli();
 	state = !state;
 	digitalWrite(PASS_ENABLE, state);
+	sei();
 }
 
 
 void step_received(){
+	cli();
 	if (state == ENABLED){
 		digitalWrite(PASS_DIR, digitalRead(RECIEVE_DIR));
 		digitalWrite(PASS_STEP, digitalRead(RECIEVE_STEP));
 	}
+	sei();
 }
 
 
