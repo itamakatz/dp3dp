@@ -1,6 +1,6 @@
 #############################################################
 # FILE: slicer.py
-# WRITERS: Liav Steinberg, Itamar Katz
+# UPDATED: 17.5.17
 #############################################################
 
 
@@ -10,7 +10,7 @@ import os
 
 g_updated_commands = []
 g_command_args = []
-g_current_X_position = 1
+g_current_X_position = 3
 g_current_Y_position = 0
 printer_X_origin = 0
 printer_Y_origin = 0
@@ -58,10 +58,12 @@ def change_coordinates(X, Y):
                             =======> R
 
     """
+    # compute the radius
     R = math.hypot(X, Y)
-    Theta = math.degrees(math.atan2(Y, X))
-
-    # TODO radians to steps!
+    # compute the arc length, by the radius and the angle
+    # if it makes trouble, comment it and uncomment the next line
+    Theta = math.atan2(Y, X) * R
+    # Theta = math.degrees(math.atan2(Y, X))
 
     return R, Theta
 
@@ -72,7 +74,7 @@ def R_will_change_direction(point0, point1, point2):
     to attack the case in which we should change the direction of R move
 
 
-                                        point1 (current position)
+                                        point1 (current arm position)
                                             *
                                             |
                                             |
@@ -85,7 +87,7 @@ def R_will_change_direction(point0, point1, point2):
                                             |
                                             |
                                             *
-                                        point2 (next position)
+                                        point2 (next arm position)
     """
 
     x0, y0 = point0[0], point0[1]
@@ -103,9 +105,9 @@ def R_will_change_direction(point0, point1, point2):
     return ((min(x1, x2) <= x3 <= max(x1, x2)) and (min(y1, y2) <= y3 <= max(y1, y2))), (x3, y3)
 
 
-def code_seen(string, char):
+def code_seen(code, char):
     global g_code_pointer
-    g_code_pointer = string.find(char)
+    g_code_pointer = code.find(char)
     return g_code_pointer >= 0
 
 
@@ -174,15 +176,6 @@ def G0_G1_gcode():
 
 
 
-def G2_G3_gcode(clockwise):
-    pass
-
-
-######################################################
-
-
-
-
 def parse(path):
 
     global g_command_args
@@ -190,7 +183,7 @@ def parse(path):
 
     for gcode in open(path, "r").readlines():
         # if its not a command, pass
-        if not gcode.startswith("G"):
+        if not code_seen(gcode, "G"):
             g_updated_commands.append(gcode.replace("\n", ""))
             continue
         g_command_args = list(map(lambda x: x.strip(), gcode.replace("\n", "").split(" ")))
@@ -198,13 +191,7 @@ def parse(path):
             if case("G0", "G1"):
                 G0_G1_gcode()
                 break
-            if case("G2", "G3"):
-                G2_G3_gcode(clockwise=case("G2"))
-                break
-            if case("G5"):
-                #TODO cubic spline
-                break
-            if case("G28", "G21"):
+            if case("G28"):
                 # don't add it to the new gcode file
                 break
             # default, the code is intact
