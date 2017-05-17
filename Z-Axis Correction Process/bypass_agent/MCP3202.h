@@ -13,4 +13,6 @@ void MCP3202_setup();
 
 void MCP3202_loop();
 
+void MCP3202_loop2();
+
 #endif
