@@ -10,8 +10,13 @@ import os
 
 g_updated_commands = []
 g_command_args = []
+
 g_current_X_position = 3
 g_current_Y_position = 0
+
+g_current_R_position = 3
+g_current_alpha_position = 0
+
 printer_X_origin = 0
 printer_Y_origin = 0
 
@@ -52,20 +57,24 @@ def change_coordinates(X, Y):
         |           we set the motion clockwise, otherwise CCW.
         |
         |  <---|
-        |      |  <== theta
+        |      |  <== alpha
         |      |
         ------------------------>
                             =======> R
 
     """
+    global g_current_R_position, g_current_alpha_position
     # compute the radius
     R = math.hypot(X, Y)
     # compute the arc length, by the radius and the angle
     # if it makes trouble, comment it and uncomment the next line
-    Theta = math.atan2(Y, X) * R
-    # Theta = math.degrees(math.atan2(Y, X))
+    alpha = abs(math.atan2(Y, X) - g_current_alpha_position) * g_current_R_position
+    # alpha = math.degrees(math.atan2(Y, X))
 
-    return R, Theta
+    g_current_R_position = R
+    g_current_alpha_position = alpha
+
+    return R, alpha
 
 
 
@@ -152,14 +161,14 @@ def G0_G1_gcode():
                                                    (g_current_X_position, g_current_Y_position),
                                                    (next_X_position, next_Y_position))
     if R_will_change:
-        R, Theta = change_coordinates(point[0], point[1])
-        command = "G1 X{R} Y{Theta} ".format(R = R, Theta = Theta) + join(untouched_args)
+        R, alpha = change_coordinates(point[0], point[1])
+        command = "G1 X{R} Y{alpha} ".format(R = R, alpha = alpha) + join(untouched_args)
         g_updated_commands.append(command)
         g_current_X_position, g_current_Y_position = point[0], point[1]
 
     # after that, continue from the same spot
-    R, Theta = change_coordinates(next_X_position, next_Y_position)
-    command = "G1 X{R} Y{Theta} ".format(R = R, Theta = Theta) + join(untouched_args)
+    R, alpha = change_coordinates(next_X_position, next_Y_position)
+    command = "G1 X{R} Y{alpha} ".format(R = R, alpha = alpha) + join(untouched_args)
     g_updated_commands.append(command)
     g_current_X_position, g_current_Y_position = next_X_position, next_Y_position
 
