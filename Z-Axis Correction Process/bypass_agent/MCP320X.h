@@ -11,6 +11,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
+#include "pins.h"
 
 class MCP320X {
 	const byte pin_cs;
@@ -32,7 +33,7 @@ public:
 	const static byte DIFFERENTIAL_CH0POS = 0b00;
 	const static byte DIFFERENTIAL_CH1POS = 0b01;
 
-	MCP320X(const byte pin = 10) : pin_cs(pin) {	}
+	MCP320X(const byte pin = MCP_SELECT_CH) : pin_cs(pin) {	}
 
 	inline void begin(const byte cdiv = SPI_CLOCK_DIV16, const byte mode = SPI_MODE0) { init(cdiv, mode); }
 	void setupSPI(const byte cdiv, const byte mode);
