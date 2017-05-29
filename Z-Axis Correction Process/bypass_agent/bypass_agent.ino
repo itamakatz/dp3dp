@@ -19,5 +19,5 @@ void loop(){
 	MCP3202_loop();
 	// intermediator_loop();
 	// interleavedContinuous_loop();
-	delay(LONG_DELAY);
+	// delay(LONG_DELAY);
 }

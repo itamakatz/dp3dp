@@ -7,8 +7,9 @@
 
 const int RECIEVE_ENABLE = 2; // connected to Z_ENABLE_PIN 62 of the mega
 const int PASS_ENABLE = 8;    // connected to ENABLE pin 2 of the stepper driver 
+const int MCP_SELECT_CH = 10;    // connected to ENABLE pin 2 of the stepper driver 
 
-// #define PASS_ENABLE 8		// connected to ENABLE pin 2 of the stepper driver 
+// #define PASS_ENABxLE 8		// connected to ENABLE pin 2 of the stepper driver 
 // #define int PASS_STEP 13			// connected to STEP pin 16 of the stepper driver 
 // #define int PASS_DIR 12			 // connected to DIR pin 19 of the stepper driver 
 

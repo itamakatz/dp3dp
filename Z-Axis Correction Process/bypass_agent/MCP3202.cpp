@@ -10,7 +10,8 @@ MCP320X adc(10);
 
 
 void MCP3202_setup() {
-	Serial.println("MCP3202_setup");
+	// Serial.println("MCP3202_setup");
+	Serial.println("000000000");
 	SPI.begin();
 	adc.begin();
 	adc.setupSPI();
@@ -18,23 +19,29 @@ void MCP3202_setup() {
 
 void MCP3202_loop() {
 
-	double average = 0;
+	// double average = 0;
 	word current_word = 0;
 
-	for(double i = 0.0; i < ITER_NUM; ++i) {
+	// for(double i = 0.0; i < ITER_NUM; ++i) {
 
-		adc.select();
-		current_word = adc.read12(0);
-		adc.deselect();
+	// 	adc.select();
+	// 	current_word = adc.read12(0);
+	// 	adc.deselect();
 
-		average = i / (i + 1) * average + current_word / (i + 1);
-		delayMicroseconds(MICROSECOND_DELAY);
-	}
+	// 	average = i / (i + 1) * average + current_word / (i + 1);
+	// 	delayMicroseconds(MICROSECOND_DELAY);
+	// }
 
-	Serial.print("Average is:");
-	Serial.println(average);
-	Serial.println("==================");
-	Serial.println();
+	// // Serial.print("Average is:");
+	// Serial.println(average);
+	// // Serial.println("==================");
+	// // Serial.println();
+
+	adc.select();
+	current_word = adc.read12(0);
+	adc.deselect();
+	Serial.println(current_word);
+	// 	delayMicroseconds(MICROSECOND_DELAY);
 
 	delay(LONG_DELAY);
 }
