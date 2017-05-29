@@ -7,6 +7,10 @@
 
 extern volatile bool state;
 
+// void enable_FALLING();
+
+// void enable_RISING();
+
 void toggle_enabled_pin();
 
 // void step_received();
