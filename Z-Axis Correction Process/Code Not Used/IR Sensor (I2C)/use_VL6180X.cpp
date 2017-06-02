@@ -24,7 +24,7 @@ resolution of 0.32 lux/count, the light level is therefore
 
 The range readings are in units of mm. */
 
-#include "interleavedContinuous.h"
+#include "use_VL6180X.h"
 
 VL6180X sensor;
 

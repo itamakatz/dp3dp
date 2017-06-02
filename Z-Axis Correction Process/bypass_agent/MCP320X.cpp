@@ -1,10 +1,3 @@
-/*
- * MCP320X.cpp
- *
- *  Created on: 2012/05/18
- *      Author: sin
- */
-
 #include <SPI.h>
 
 #include "MCP320X.h"

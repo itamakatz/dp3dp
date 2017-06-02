@@ -1,11 +1,3 @@
-/*
- * MCP320X.h
- *
- *  Microchip SAR AD converter 3202/4, 3002/4
- *  Created on: 2012/05/18
- *      Author: sin
- */
-
 #ifndef MCP320X_H_
 #define MCP320X_H_
 

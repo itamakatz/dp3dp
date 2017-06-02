@@ -2,7 +2,8 @@ import processing.serial.*;
 Serial mySerial;
 PrintWriter output;
 void setup() {
-   mySerial = new Serial( this, Serial.list()[0], 9600 );
+   mySerial = new Serial( this, Serial.list()[0], 250000 );
+   // mySerial = new Serial( this, Serial.list()[0], 9600 );
    output = createWriter( "data.txt" );
 }
 void draw() {
@@ -11,6 +12,11 @@ void draw() {
          if ( value != null ) {
               output.print( value );
          }
+    }
+    if (millis() >= 100) {
+      output.flush();  // Writes the remaining data to the file
+      output.close();  // Finishes the file
+      exit();  // Stops the program      
     }
 }
 

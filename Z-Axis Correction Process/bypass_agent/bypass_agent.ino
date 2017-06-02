@@ -1,13 +1,12 @@
 #include "pins.h"
-#include "MCP3202.h"
+#include "use_MCP3202.h"
 #include "intermediator.h"
-#include "InterleavedContinuous.h"
 
 #define LONG_DELAY 700
 
 void setup(){
-	Serial.begin(9600);
-	// Serial.begin(19200);
+	// Serial.begin(9600);
+	Serial.begin(250000);
 	
 	MCP3202_setup();
 	// intermediator_setup();
