@@ -1,4 +1,7 @@
 
+
+
+
 #define ENABLED 0     // for stepper driver A4988 - enable with low signal
 #define DISABLED 1
 
@@ -16,20 +19,16 @@ volatile byte state = DISABLED;
 
 
 void toggle_enabled_pin(){
-	cli();
 	state = !state;
 	digitalWrite(PASS_ENABLE, state);
-	sei();
 }
 
 
 void step_received(){
-	cli();
 	if (state == ENABLED){
 		digitalWrite(PASS_DIR, digitalRead(RECIEVE_DIR));
 		digitalWrite(PASS_STEP, digitalRead(RECIEVE_STEP));
 	}
-	sei();
 }
 
 

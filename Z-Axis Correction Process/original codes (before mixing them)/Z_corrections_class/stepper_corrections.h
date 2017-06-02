@@ -9,14 +9,18 @@
 
 #define ENABLE LOW
 #define DISABLE HIGH
-#define DELAY_TIME 300
+#define DELAY_TIME 10
 #define REPEAT(NUM_STEPS) for(int i = NUM_STEPS; i--;)
+#define FORCE_INLINE __attribute__((always_inline)) inline
 
 class Z_correction {
 
 public:
     Z_correction(int Z_enable_pin, int Z_step_pin, int Z_dir_pin);
-    void apply_steps(int num_of_steps, bool clockwise);
+    FORCE_INLINE void enable();
+    FORCE_INLINE void disable();
+    FORCE_INLINE void apply_steps(int num_of_steps);
+    FORCE_INLINE void set_direction(bool clockwise);
 
 private:
     int _Z_enable_pin;
