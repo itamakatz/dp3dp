@@ -1,18 +1,17 @@
-#include <FreeSixIMU.h>
-#include <FIMU_ADXL345.h>
-#include <FIMU_ITG3200.h>
+#include <FreeSixIMU_Tenssy3.h>
+#include <FIMU_ADXL345_Tenssy3.h>
+#include <FIMU_ITG3200_Tenssy3.h>
 
-#include <Wire.h>
+#include <i2c_t3.h>
 
 float angles[3]; // yaw pitch roll
 
-// Set the FreeSixIMU object
-FreeSixIMU sixDOF = FreeSixIMU();
+// Set the FreeSixIMU_Tenssy3 object
+FreeSixIMU_Tenssy3 sixDOF = FreeSixIMU_Tenssy3();
 
 void setup() { 
   Serial.begin(250000);
   Wire.begin();
-  
   delay(5);
   sixDOF.init(); //begin the IMU
   delay(5);

@@ -43,7 +43,6 @@ void setup()
   myPort.write("1");
 }
 
-
 float decodeFloat(String inString) {
   byte [] inData = new byte[4];
 
@@ -57,12 +56,6 @@ float decodeFloat(String inString) {
   int intbits = (inData[3] << 24) | ((inData[2] & 0xff) << 16) | ((inData[1] & 0xff) << 8) | (inData[0] & 0xff);
   return Float.intBitsToFloat(intbits);
 }
-
-
-
-
-
-
 
 void readQ() {
   if (myPort.available() >= 18) {
@@ -79,7 +72,6 @@ void readQ() {
     }
   }
 }
-
 
 void buildBoxShape() {
   //box(60, 10, 40);
@@ -131,7 +123,6 @@ void buildBoxShape() {
   endShape();
 }
 
-
 void drawCube() {  
   pushMatrix();
   translate(800/2, 600/2 + 50, 0);
@@ -147,7 +138,6 @@ void drawCube() {
 
   popMatrix();
 }
-
 
 void draw() {
   background(#000000);

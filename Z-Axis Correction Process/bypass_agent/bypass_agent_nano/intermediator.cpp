@@ -1,7 +1,7 @@
 #include "intermediator.h"
 
 // const int RECIEVE_ENABLE = 2; // connected to Z_ENABLE_PIN 62 of the mega
-// const int PASS_ENABLE = 8;    // connected to ENABLE pin 2 of the stepper driver 
+// const int PASS_ENABLE = 8;		// connected to ENABLE pin 2 of the stepper driver 
 
 volatile bool state = true;
 
