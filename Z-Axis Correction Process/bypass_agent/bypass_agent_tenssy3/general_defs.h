@@ -18,9 +18,6 @@
 #define VL6180_CRITICAL_DELAY 20
 
 // Other delays
-#define MAIN_LOOP_CRITICAL_DELAY 60
-#define LONG_DELAY 1500
-
-
+#define MAIN_LOOP_CRITICAL_DELAY 10
 
 #endif

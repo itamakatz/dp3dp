@@ -15,7 +15,11 @@ private:
 	Cyclic_array c_array;
 
 	float _average[3];
+	float _average_zero_offset[3];
+
 	float _angles_Euler[3];
+	float _angles_Euler_zero_offset[3];
+	
 	float _c_array_elements[3];
 	float _weights;
 	float _alpha;
@@ -25,7 +29,8 @@ private:
 public:
 	sixDOF_Tenssy3(){}
 	void sixDOF_setup(float alpha);
-	void sixDOF_loop(); 
+	void sixDOF_loop();
+	void set_zero();
 	void get_angles(float* angles_average);
 	void get_average(float* angles_Euler);
 	void calibrate();

@@ -7,9 +7,9 @@
 
 #ifdef DEBUG_FUNC_FLOW_ALL
 
-	// #ifndef DEBUG_FUNC_FLOW
-	// 	#define DEBUG_FUNC_FLOW
-	// #endif
+	#ifndef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		#define DEBUG_FUNC_FLOW__BYPASS_AGENT__
+	#endif
 
 	#ifndef DEBUG_FUNC_FLOW__SIX_DFO__
 		#define DEBUG_FUNC_FLOW__SIX_DFO__
@@ -19,10 +19,13 @@
 		#define DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 	#endif
 
-	#ifndef DEBUG_FUNC_FLOW__BYPASS_AGENT__
-		#define DEBUG_FUNC_FLOW__BYPASS_AGENT__
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
 	#endif
+#endif
 
+#define DEBUG_FUNC_FLOW__BYPASS_AGENT__
+#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif

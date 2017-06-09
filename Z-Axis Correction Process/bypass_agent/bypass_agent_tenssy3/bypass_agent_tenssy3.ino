@@ -62,7 +62,6 @@ void loop(){
 	#endif
 
 	delay(MAIN_LOOP_CRITICAL_DELAY);
-	// delay(LONG_DELAY);
 }
 
 void print_results(){
@@ -88,14 +87,33 @@ void print_results(){
 }
 
 void check_key(){
+
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("check_key()");
+	#endif
+
 	if (Serial.available() > 0) {
+
+		#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+			Serial.println("check_key() - after if (Serial.available() > 0)");
+		#endif
 		
-		int incomingByte = Serial.read();
+		// int incomingByte = Serial.read();
+		int incomingByte = Serial.parseInt();
 	
 		if (incomingByte == 1){
+			#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+				Serial.println("incomingByte == 1");
+			#endif
 			sixDOF_object.calibrate();
+			Serial.println("Gyro calibrated");
+		} else if (incomingByte == 2){
+			#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+				Serial.println("incomingByte == 2");
+			#endif
+			sixDOF_object.set_zero();
+			Serial.println("Calibrated values to zero");
 		}
 	
-		Serial.print("Calibrated");
 	}
 }
