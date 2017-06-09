@@ -1,9 +1,8 @@
 #ifndef __intermediator__
 #define __intermediator__
 
-#include "pins.h"
 #include "Arduino.h"
-
+#include "general_defs.h"
 
 extern volatile bool state;
 

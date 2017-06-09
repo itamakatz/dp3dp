@@ -1,7 +1,5 @@
 #include "use_VL6180.h"
 
-
-
 void VL6180::VL6180_setup()
 {
 	sensor.init();
@@ -20,7 +18,7 @@ void VL6180::VL6180_setup()
 	sensor.stopContinuous();
 	// in case stopContinuous() triggered a single-shot
 	// measurement, wait for it to complete
-	delay(300);
+	delay(VL6180_CRITICAL_DELAY);
 	// start interleaved continuous mode with period of 100 ms
 	sensor.startInterleavedContinuous(100);
 

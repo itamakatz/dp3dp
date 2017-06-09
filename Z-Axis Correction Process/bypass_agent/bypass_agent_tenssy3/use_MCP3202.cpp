@@ -7,7 +7,6 @@
 #define BIG_LOOP_ITER 10
 #define ITER_NUM 10
 #define PACKET_SIZE 200
-#define LONG_DELAY 1000
 #define MICROSECOND_DELAY 10
 
 MCP320X adc(MCP_SELECT_CH);
@@ -51,9 +50,9 @@ void MCP3202_loop() {
 		// delayMicroseconds(MICROSECOND_DELAY);
 
 		// if ( hist.find(current_word) == hist.end() ) {
-		//   hist.insert(std::make_pair(current_word, 1));
+			// hist.insert(std::make_pair(current_word, 1));
 		// } else {
-		//   hist[current_word]++;
+			// hist[current_word]++;
 		// }
 	// } else if(!end_sampling and millis() >= 5000) {
 
