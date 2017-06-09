@@ -98,9 +98,14 @@ void check_key(){
 			Serial.println("check_key() - after if (Serial.available() > 0)");
 		#endif
 		
-		// int incomingByte = Serial.read();
-		int incomingByte = Serial.parseInt();
-	
+		// read ascii char and convert to int representation
+		int incomingByte = Serial.read() - '0';
+		
+		#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+			Serial.print("check_key() - incomingByte is ");
+			Serial.println(incomingByte);
+		#endif
+
 		if (incomingByte == 1){
 			#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
 				Serial.println("incomingByte == 1");
