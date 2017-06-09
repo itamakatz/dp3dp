@@ -4,8 +4,7 @@
 //#define DEBUG_INTERRUPTS
 //#define DEBUG_LOOP
 
-volatile byte state = DISABLED;
-
+volatile byte state = ENABLED;
 
 
 void toggle(){
@@ -14,13 +13,17 @@ void toggle(){
         Serial.print("state is: ");
         Serial.println(state ? "DISABLED": "ENABLED");  
     #else
-      	state = !state;
-      	toggle(state);
+        if (digitalReadFast(RECIEVE_ENABLE) == HIGH){
+            state = DISABLED;
+            toggle(DISABLED);
+        } else {
+            return;
+        }      	
     #endif
 }
 
 
-void step_received(){
+void step_received(){ // it's marlin's turn
     #ifdef DEBUG_INTERRUPTS
         Serial.println("in step_recieved");
         Serial.print("state is: ");
@@ -47,7 +50,7 @@ void setup(){
   	pinMode(PASS_STEP, OUTPUT);
   	pinMode(PASS_DIR, OUTPUT);
   
-  	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, LOW);
+  	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, CHANGE);
   	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, RISING);
 
     delay(3000);
@@ -57,24 +60,22 @@ void setup(){
 
 void loop(){
 
-    if (state == DISABLED){
-        // examine the sensor constantly. (according to _steps_gained_from_marlin)
-        // repair it.
-    }
+    
+    // examine the sensor constantly. (according to _steps_gained_from_marlin)
+    // repair it.
+    
+    keep_step_low();
   
     #ifdef DEBUG_LOOP
         Serial.print("state is: ");
         Serial.println(state ? "DISABLED": "ENABLED");  
     #endif
 
+    
+
+}
+
+inline void keep_step_low(){
     digitalWriteFast(PASS_STEP, LOW);
-
-//	Serial.println(state == DISABLED ? "DISABLED": "ENABLED");
-//  digitalWrite(PASS_ENABLE, HIGH);
-//  digitalWrite(PASS_DIR, HIGH);
-//  digitalWrite(PASS_STEP, HIGH);
-//  digitalWrite(PASS_ENABLE, LOW);
-//  delay(1500);
-
 }
 
