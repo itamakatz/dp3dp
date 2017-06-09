@@ -23,27 +23,13 @@
 #define PASS_DIR         12    // connected to DIR pin 19 of the stepper driver 
 
 
+extern int g_steps_gained_from_marlin;
+extern bool g_wrote_dir;
 
-class Z_correction {
 
-public:
-    Z_correction();
-    ~Z_correction();
-    void init();
-    void toggle(byte state);
-    void apply_steps(int num_of_steps);
-    void set_direction();
-
-private:
-    FORCE_INLINE void _enable();
-    FORCE_INLINE void _disable();
-    
-    int _Z_enable_pin;
-    int _Z_step_pin;
-    int _Z_dir_pin;
-    float _steps_gained_from_marlin;
-    bool _wrote_dir;
-};
+void toggle(byte state);
+void apply_steps(int num_of_steps);
+void set_direction();
 
 
 

@@ -4,42 +4,45 @@
 
 #include "stepper_corrections.h"
 
+int g_steps_gained_from_marlin = 0;
+bool g_wrote_dir = false;
 
-Z_correction::Z_correction(){}
 
-Z_correction::~Z_correction(){}
-
-void Z_correction::toggle(byte state){
-  state == ENABLED  ? _enable(): _disable();
-}
-
-void Z_correction::init(){
-  _steps_gained_from_marlin = 0;
-  _wrote_dir = false;
-}
-
-void Z_correction::_enable() {
+void _enable() {
     digitalWriteFast(PASS_ENABLE, ENABLED);
 }
 
-void Z_correction::_disable() {
+void _disable() {
     digitalWriteFast(PASS_ENABLE, DISABLED);
-    _wrote_dir = false;
+    g_wrote_dir = false;
 }
 
 
-void Z_correction::apply_steps(int num_of_steps) {
-    REPEAT(num_of_steps){
-        digitalWriteFast(PASS_STEP, LOW);
-        digitalWriteFast(PASS_STEP, HIGH);
-        //delayMicroseconds(DELAY_TIME);
+void toggle(byte state){
+    if (state == ENABLED){
+        _enable();
+    } else {
+       _disable();
     }
-    _steps_gained_from_marlin += num_of_steps;
 }
 
-void Z_correction::set_direction() {
-    if (_wrote_dir) return;
+
+void apply_steps(int num_of_steps) {
+    #ifdef MULTIPLE_STEPS
+        REPEAT(num_of_steps){
+    #endif
+            digitalWriteFast(PASS_STEP, LOW);
+            digitalWriteFast(PASS_STEP, HIGH);
+    #ifdef MULTIPLE_STEPS
+        }
+    #endif
+    g_steps_gained_from_marlin += num_of_steps;
+}
+
+
+void set_direction() {
+    if (g_wrote_dir) return;
     int dir = digitalReadFast(RECIEVE_DIR);
     digitalWrite(PASS_DIR, dir);
-    _wrote_dir = true;
+    g_wrote_dir = true;
 }
