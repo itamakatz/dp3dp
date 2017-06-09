@@ -1,33 +1,23 @@
 
+#include "stepper_corrections.h"
 
-
-
-#define ENABLED 0     // for stepper driver A4988 - enable with low signal
-#define DISABLED 1
-
-const int RECIEVE_ENABLE = 2; // connected to Z_ENABLE_PIN 62 of the mega
-const int RECIEVE_STEP = 3;    // connected to Z_STEP_PIN 46 of the mega
-const int RECIEVE_DIR = 4;     // connected to Z_DIR_PIN 48 of the mega
-
-const int PASS_ENABLE = 8;    // connected to ENABLE pin 2 of the stepper driver 
-const int PASS_STEP = 13;      // connected to STEP pin 16 of the stepper driver 
-const int PASS_DIR = 12;       // connected to DIR pin 19 of the stepper driver 
-
+#define DEBUG
 
 volatile byte state = DISABLED;
+Z_correction Z_C;
 
 
 
-void toggle_enabled_pin(){
+void toggle(){
 	state = !state;
-	digitalWrite(PASS_ENABLE, state);
+	Z_C.toggle(state);
 }
 
 
 void step_received(){
 	if (state == ENABLED){
-		digitalWrite(PASS_DIR, digitalRead(RECIEVE_DIR));
-		digitalWrite(PASS_STEP, digitalRead(RECIEVE_STEP));
+    Z_C.set_direction();
+		Z_C.apply_steps(1);
 	}
 }
 
@@ -35,7 +25,9 @@ void step_received(){
 
 void setup(){
 
-	Serial.begin(250000);
+	Serial.begin(9600);
+
+  Z_C.init();
 
 	pinMode(RECIEVE_ENABLE, INPUT);
 	pinMode(RECIEVE_STEP, INPUT);
@@ -45,17 +37,34 @@ void setup(){
 	pinMode(PASS_STEP, OUTPUT);
 	pinMode(PASS_DIR, OUTPUT);
 
-	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle_enabled_pin, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, CHANGE);
+  digitalWrite(PASS_STEP, LOW);
+
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, LOW);
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, RISING);
 
 }
 
 
 void loop(){
 
-	if (state == DISABLED){
-		// do our stuff
-	}
+  if (state == DISABLED){
+    // examine the sensor constantly. (according to _height_gained_from_marlin)
+    // repair it.
+  }
+
+  #ifdef DEBUG
+    Serial.print("state is: ");
+    Serial.println(state ? "DISABLED": "ENABLED");  
+  #endif
+
+  digitalWriteFast(PASS_STEP, LOW);
+
+//	Serial.println(state == DISABLED ? "DISABLED": "ENABLED");
+//  digitalWrite(PASS_ENABLE, HIGH);
+//  digitalWrite(PASS_DIR, HIGH);
+//  digitalWrite(PASS_STEP, HIGH);
+//  digitalWrite(PASS_ENABLE, LOW);
+//  delay(1500);
 
 }
 
