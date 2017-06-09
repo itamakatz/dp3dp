@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#include "pins.h"
+#include "general_defs.h"
 
 class MCP320X {
 	const byte pin_cs;

@@ -1,50 +1,86 @@
-#include "pins.h"
 // #include "use_MCP3202.h"
 #include "sixDOF_Tenssy3.h"
 #include "use_VL6180.h"
 #include "intermediator.h"
 
 #include <i2c_t3.h>
-
-#define LONG_DELAY 1500
-#define CRITICAL_DELAY 60
+#include "general_defs.h"
 
 
-int distance;
-float* angles_Euler;
+int distance = 0;
+float angles_Euler[3] = {0};
+float angles_Euler_average[3] = {0};
 sixDOF_Tenssy3 sixDOF_object = sixDOF_Tenssy3();
 VL6180 VL6180_object = VL6180();
 
 void setup(){
-	// Serial.begin(9600);
+
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		delay(DEBUG_DELAY);
+	#endif
+
 	Serial.begin(115200);
 	Wire.begin();
 	
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("setup: after Wire.begin()");
+	#endif
+
 	// intermediator_setup();
-	sixDOF_object.sixDOF_setup(300, (float)1.1);
+	sixDOF_object.sixDOF_setup((float)0.1);
 	VL6180_object.VL6180_setup();
+
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("setup: after objects init");
+	#endif
 }
 
 void loop(){
+
 	// intermediator_loop();
 	distance = VL6180_object.read_distance();
-	sixDOF_object.sixDOF_loop(angles_Euler);
-	angles_Euler = sixDOF_object.get_average();
-	Serial.print("CDF is: ");
-	Serial.println(sixDOF_object.get_CDF());
-	print_results();
+	sixDOF_object.sixDOF_loop();
+	sixDOF_object.get_angles(&angles_Euler[0]);
+	sixDOF_object.get_average(&angles_Euler_average[0]);
+	
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("loop: after updating objects");
+	#endif
+
+	#ifndef DISABLE_NORMAL_PRINTS
+		print_results();
+	#endif
+
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("setup: after print_results()");
+	#endif
 
 	check_key();
 
-	delay(CRITICAL_DELAY);
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("setup: after check_key()");
+	#endif
+
+	delay(MAIN_LOOP_CRITICAL_DELAY);
 	// delay(LONG_DELAY);
 }
 
 void print_results(){
+
+	Serial.print("Distance: ");
 	Serial.println(distance);
 
+	Serial.print("angles_Euler: ");
 	for (int i = 0; i < 3; ++i){
 		Serial.print(angles_Euler[i]);	
+		Serial.print(", ");
+	}
+
+	Serial.println();
+
+	Serial.print("angles_Euler_average: ");
+	for (int i = 0; i < 3; ++i){
+		Serial.print(angles_Euler_average[i]);	
 		Serial.print(", ");
 	}
 
@@ -53,13 +89,13 @@ void print_results(){
 
 void check_key(){
 	if (Serial.available() > 0) {
-		// read the incoming byte:
+		
 		int incomingByte = Serial.read();
-		if (incomingByte == 1)
-		{
+	
+		if (incomingByte == 1){
 			sixDOF_object.calibrate();
 		}
-		// say what you got:
+	
 		Serial.print("Calibrated");
 	}
 }

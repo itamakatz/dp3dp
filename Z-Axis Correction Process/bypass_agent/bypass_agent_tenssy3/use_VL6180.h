@@ -3,10 +3,10 @@
 
 #include <i2c_t3.h>
 #include "VL6180X.h"
+#include "general_defs.h"
 
 class VL6180 {
 private:
-	// float angles_Euler[3]
 	VL6180X sensor; // FreeSixIMU object
 
 public:

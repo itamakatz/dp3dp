@@ -8,7 +8,7 @@ void MCP320X::init(const byte cdiv, const byte mode) {
 	setupSPI(cdiv, mode);
 }
 
-void  MCP320X::setupSPI(const byte cdiv, const byte mode) {
+void MCP320X::setupSPI(const byte cdiv, const byte mode) {
 	clock_divider = cdiv;
 	spi_mode = mode;
 	setupSPI();

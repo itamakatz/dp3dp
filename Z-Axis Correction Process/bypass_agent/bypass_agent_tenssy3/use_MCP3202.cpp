@@ -51,9 +51,9 @@ void MCP3202_loop() {
 		// delayMicroseconds(MICROSECOND_DELAY);
 
 		// if ( hist.find(current_word) == hist.end() ) {
-		//   hist.insert(std::make_pair(current_word, 1));
+			// hist.insert(std::make_pair(current_word, 1));
 		// } else {
-		//   hist[current_word]++;
+			// hist[current_word]++;
 		// }
 	// } else if(!end_sampling and millis() >= 5000) {
 

@@ -6,25 +6,28 @@
 #include <FIMU_ITG3200_Tenssy3.h>
 
 #include <i2c_t3.h>
+#include "general_defs.h"
+#include "Cyclic_array.h"
 
 class sixDOF_Tenssy3 {
 private:
 	FreeSixIMU_Tenssy3 FsixDOF_Tenssy3; // FreeSixIMU object
-	float _angles_Euler[3] = {0};
-	float _average[3] = {0};
-	int _sample_count;
+	Cyclic_array c_array;
+
+	float _average[3];
+	float _angles_Euler[3];
+	float _c_array_elements[3];
 	float _weights;
-	float _CDF_weights;
+	float _alpha;
 	void _init_samples();
+	void update_average(); 
 
 public:
 	sixDOF_Tenssy3(){}
-	void sixDOF_setup(int sample_count, float _weights);
+	void sixDOF_setup(float alpha);
 	void sixDOF_loop(); 
-	void sixDOF_loop(float* angles_Euler);
-	float * get_average();
-	void compute_CDF();
-	float get_CDF();
+	void get_angles(float* angles_average);
+	void get_average(float* angles_Euler);
 	void calibrate();
 };
 
