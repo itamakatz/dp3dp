@@ -1,5 +1,5 @@
-#include "VL6180X.h"
-#include <Wire.h>
+#include "VL6180X_Tenssy3.h"
+#include <i2c_t3.h>
 
 // Defines /////////////////////////////////////////////////////////////////////
 
@@ -7,12 +7,12 @@
 // and sets the last bit correctly based on reads and writes
 #define ADDRESS_DEFAULT 0b0101001
 
-// RANGE_SCALER values for 1x, 2x, 3x scaling - see STSW-IMG003 core/src/vl6180x_api.c (ScalerLookUP[])
+// RANGE_SCALER values for 1x, 2x, 3x scaling - see STSW-IMG003 core/src/VL6180X_Tenssy3_api.c (ScalerLookUP[])
 static uint16_t const ScalerValues[] = {0, 253, 127, 84};
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-VL6180X::VL6180X(void)
+VL6180X_Tenssy3::VL6180X_Tenssy3(void)
   : address(ADDRESS_DEFAULT)
   , scaling(0)
   , ptp_offset(0)
@@ -23,7 +23,7 @@ VL6180X::VL6180X(void)
 
 // Public Methods //////////////////////////////////////////////////////////////
 
-void VL6180X::setAddress(uint8_t new_addr)
+void VL6180X_Tenssy3::setAddress(uint8_t new_addr)
 {
   writeReg(I2C_SLAVE__DEVICE_ADDRESS, new_addr & 0x7F);
   address = new_addr;
@@ -31,7 +31,7 @@ void VL6180X::setAddress(uint8_t new_addr)
 
 // Initialize sensor with settings from ST application note AN4545, section 9 -
 // "Mandatory : private registers"
-void VL6180X::init()
+void VL6180X_Tenssy3::init()
 {
   // Store part-to-part range offset so it can be adjusted if scaling is changed
   ptp_offset = readReg(SYSRANGE__PART_TO_PART_RANGE_OFFSET);
@@ -98,7 +98,7 @@ void VL6180X::init()
 // Note that this function does not set up GPIO1 as an interrupt output as
 // suggested, though you can do so by calling:
 // writeReg(SYSTEM__MODE_GPIO1, 0x10);
-void VL6180X::configureDefault(void)
+void VL6180X_Tenssy3::configureDefault(void)
 {
   // "Recommended : Public registers"
 
@@ -134,7 +134,7 @@ void VL6180X::configureDefault(void)
   // Reset other settings to power-on defaults
 
   // sysrange__max_convergence_time = 49 (49 ms)
-  writeReg(VL6180X::SYSRANGE__MAX_CONVERGENCE_TIME, 0x31);
+  writeReg(VL6180X_Tenssy3::SYSRANGE__MAX_CONVERGENCE_TIME, 0x31);
 
   // disable interleaved mode
   writeReg(INTERLEAVED_MODE__ENABLE, 0);
@@ -144,7 +144,7 @@ void VL6180X::configureDefault(void)
 }
 
 // Writes an 8-bit register
-void VL6180X::writeReg(uint16_t reg, uint8_t value)
+void VL6180X_Tenssy3::writeReg(uint16_t reg, uint8_t value)
 {
   Wire.beginTransmission(address);
   Wire.write((reg >> 8) & 0xff);  // reg high byte
@@ -154,7 +154,7 @@ void VL6180X::writeReg(uint16_t reg, uint8_t value)
 }
 
 // Writes a 16-bit register
-void VL6180X::writeReg16Bit(uint16_t reg, uint16_t value)
+void VL6180X_Tenssy3::writeReg16Bit(uint16_t reg, uint16_t value)
 {
   Wire.beginTransmission(address);
   Wire.write((reg >> 8) & 0xff);  // reg high byte
@@ -165,7 +165,7 @@ void VL6180X::writeReg16Bit(uint16_t reg, uint16_t value)
 }
 
 // Writes a 32-bit register
-void VL6180X::writeReg32Bit(uint16_t reg, uint32_t value)
+void VL6180X_Tenssy3::writeReg32Bit(uint16_t reg, uint32_t value)
 {
   Wire.beginTransmission(address);
   Wire.write((reg >> 8) & 0xff);  // reg high byte
@@ -178,7 +178,7 @@ void VL6180X::writeReg32Bit(uint16_t reg, uint32_t value)
 }
 
 // Reads an 8-bit register
-uint8_t VL6180X::readReg(uint16_t reg)
+uint8_t VL6180X_Tenssy3::readReg(uint16_t reg)
 {
   uint8_t value;
 
@@ -195,7 +195,7 @@ uint8_t VL6180X::readReg(uint16_t reg)
 }
 
 // Reads a 16-bit register
-uint16_t VL6180X::readReg16Bit(uint16_t reg)
+uint16_t VL6180X_Tenssy3::readReg16Bit(uint16_t reg)
 {
   uint16_t value;
 
@@ -213,7 +213,7 @@ uint16_t VL6180X::readReg16Bit(uint16_t reg)
 }
 
 // Reads a 32-bit register
-uint32_t VL6180X::readReg32Bit(uint16_t reg)
+uint32_t VL6180X_Tenssy3::readReg32Bit(uint16_t reg)
 {
   uint32_t value;
 
@@ -238,9 +238,9 @@ uint32_t VL6180X::readReg32Bit(uint16_t reg)
 // factor increases the sensor's potential maximum range but reduces its
 // resolution.
 
-// Implemented using ST's VL6180X API as a reference (STSW-IMG003); see
-// VL6180x_UpscaleSetScaling() in vl6180x_api.c.
-void VL6180X::setScaling(uint8_t new_scaling)
+// Implemented using ST's VL6180X_Tenssy3 API as a reference (STSW-IMG003); see
+// VL6180X_Tenssy3_UpscaleSetScaling() in VL6180X_Tenssy3_api.c.
+void VL6180X_Tenssy3::setScaling(uint8_t new_scaling)
 {
   uint8_t const DefaultCrosstalkValidHeight = 20; // default value of SYSRANGE__CROSSTALK_VALID_HEIGHT
 
@@ -251,27 +251,27 @@ void VL6180X::setScaling(uint8_t new_scaling)
   writeReg16Bit(RANGE_SCALER, ScalerValues[scaling]);
 
   // apply scaling on part-to-part offset
-  writeReg(VL6180X::SYSRANGE__PART_TO_PART_RANGE_OFFSET, ptp_offset / scaling);
+  writeReg(VL6180X_Tenssy3::SYSRANGE__PART_TO_PART_RANGE_OFFSET, ptp_offset / scaling);
 
   // apply scaling on CrossTalkValidHeight
-  writeReg(VL6180X::SYSRANGE__CROSSTALK_VALID_HEIGHT, DefaultCrosstalkValidHeight / scaling);
+  writeReg(VL6180X_Tenssy3::SYSRANGE__CROSSTALK_VALID_HEIGHT, DefaultCrosstalkValidHeight / scaling);
 
   // This function does not apply scaling to RANGE_IGNORE_VALID_HEIGHT.
 
   // enable early convergence estimate only at 1x scaling
-  uint8_t rce = readReg(VL6180X::SYSRANGE__RANGE_CHECK_ENABLES);
-  writeReg(VL6180X::SYSRANGE__RANGE_CHECK_ENABLES, (rce & 0xFE) | (scaling == 1));
+  uint8_t rce = readReg(VL6180X_Tenssy3::SYSRANGE__RANGE_CHECK_ENABLES);
+  writeReg(VL6180X_Tenssy3::SYSRANGE__RANGE_CHECK_ENABLES, (rce & 0xFE) | (scaling == 1));
 }
 
 // Performs a single-shot ranging measurement
-uint8_t VL6180X::readRangeSingle()
+uint8_t VL6180X_Tenssy3::readRangeSingle()
 {
   writeReg(SYSRANGE__START, 0x01);
   return readRangeContinuous();
 }
 
 // Performs a single-shot ambient light measurement
-uint16_t VL6180X::readAmbientSingle()
+uint16_t VL6180X_Tenssy3::readAmbientSingle()
 {
   writeReg(SYSALS__START, 0x01);
   return readAmbientContinuous();
@@ -283,7 +283,7 @@ uint16_t VL6180X::readAmbientSingle()
 // The period must be greater than the time it takes to perform a
 // measurement. See section 2.4.4 ("Continuous mode limits") in the datasheet
 // for details.
-void VL6180X::startRangeContinuous(uint16_t period)
+void VL6180X_Tenssy3::startRangeContinuous(uint16_t period)
 {
   int16_t period_reg = (int16_t)(period / 10) - 1;
   period_reg = constrain(period_reg, 0, 254);
@@ -298,7 +298,7 @@ void VL6180X::startRangeContinuous(uint16_t period)
 // The period must be greater than the time it takes to perform a
 // measurement. See section 2.4.4 ("Continuous mode limits") in the datasheet
 // for details.
-void VL6180X::startAmbientContinuous(uint16_t period)
+void VL6180X_Tenssy3::startAmbientContinuous(uint16_t period)
 {
   int16_t period_reg = (int16_t)(period / 10) - 1;
   period_reg = constrain(period_reg, 0, 254);
@@ -317,7 +317,7 @@ void VL6180X::startAmbientContinuous(uint16_t period)
 // The period must be greater than the time it takes to perform both
 // measurements. See section 2.4.4 ("Continuous mode limits") in the datasheet
 // for details.
-void VL6180X::startInterleavedContinuous(uint16_t period)
+void VL6180X_Tenssy3::startInterleavedContinuous(uint16_t period)
 {
   int16_t period_reg = (int16_t)(period / 10) - 1;
   period_reg = constrain(period_reg, 0, 254);
@@ -331,7 +331,7 @@ void VL6180X::startInterleavedContinuous(uint16_t period)
 // and/or ambient light if continuous mode is not active, so it's a good idea to
 // wait a few hundred ms after calling this function to let that complete
 // before starting continuous mode again or taking a reading.
-void VL6180X::stopContinuous()
+void VL6180X_Tenssy3::stopContinuous()
 {
 
   writeReg(SYSRANGE__START, 0x01);
@@ -343,7 +343,7 @@ void VL6180X::stopContinuous()
 // Returns a range reading when continuous mode is activated
 // (readRangeSingle() also calls this function after starting a single-shot
 // range measurement)
-uint8_t VL6180X::readRangeContinuous()
+uint8_t VL6180X_Tenssy3::readRangeContinuous()
 {
   uint16_t millis_start = millis();
   while ((readReg(RESULT__INTERRUPT_STATUS_GPIO) & 0x04) == 0)
@@ -364,7 +364,7 @@ uint8_t VL6180X::readRangeContinuous()
 // Returns an ambient light reading when continuous mode is activated
 // (readAmbientSingle() also calls this function after starting a single-shot
 // ambient light measurement)
-uint16_t VL6180X::readAmbientContinuous()
+uint16_t VL6180X_Tenssy3::readAmbientContinuous()
 {
   uint16_t millis_start = millis();
   while ((readReg(RESULT__INTERRUPT_STATUS_GPIO) & 0x20) == 0)
@@ -384,7 +384,7 @@ uint16_t VL6180X::readAmbientContinuous()
 
 // Did a timeout occur in one of the read functions since the last call to
 // timeoutOccurred()?
-bool VL6180X::timeoutOccurred()
+bool VL6180X_Tenssy3::timeoutOccurred()
 {
   bool tmp = did_timeout;
   did_timeout = false;

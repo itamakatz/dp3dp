@@ -1,7 +1,5 @@
 #include "sixDOF_Tenssy3.h"
 
-#define sixDOF_CRITICAL_DELAY 20
-
 void sixDOF_Tenssy3::sixDOF_setup(float alpha) {
 
 	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__

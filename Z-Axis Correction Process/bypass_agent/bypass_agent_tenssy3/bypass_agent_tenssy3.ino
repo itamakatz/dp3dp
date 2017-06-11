@@ -1,13 +1,13 @@
+#include "use_VL6180.h"
 // #include "use_MCP3202.h"
 #include "sixDOF_Tenssy3.h"
-#include "use_VL6180.h"
 #include "intermediator.h"
 
 #include <i2c_t3.h>
 #include "general_defs.h"
 
 
-int distance = 0;
+uint16_t distance = 0;
 float angles_Euler[3] = {0};
 float angles_Euler_average[3] = {0};
 sixDOF_Tenssy3 sixDOF_object = sixDOF_Tenssy3();
@@ -33,6 +33,11 @@ void setup(){
 	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
 		Serial.println("setup: after objects init");
 	#endif
+
+	#ifdef DEBUG_MILIS__BYPASS_AGENT__
+		Serial.print(millis());
+		Serial.println(" - end of setup");
+	#endif
 }
 
 void loop(){
@@ -52,13 +57,18 @@ void loop(){
 	#endif
 
 	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
-		Serial.println("setup: after print_results()");
+		Serial.println("loop: after print_results()");
 	#endif
 
 	check_key();
 
 	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
-		Serial.println("setup: after check_key()");
+		Serial.println("loop: after check_key()");
+	#endif
+
+	#ifdef DEBUG_MILIS__BYPASS_AGENT__
+		Serial.print(millis());
+		Serial.println(" - end of loop");
 	#endif
 
 	delay(MAIN_LOOP_CRITICAL_DELAY);

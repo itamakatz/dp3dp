@@ -5,19 +5,19 @@
 #include "pins.h"
 
 #define C_ARRAY_SIZE 30
-#define ENABLE_NORMAL_PRINTS
 
-#ifndef ENABLE_NORMAL_PRINTS
-	#ifndef DISABLE_NORMAL_PRINTS
+#define ENABLE_NORMAL_PRINTS
+#ifdef ENABLE_NORMAL_PRINTS
+	#ifdef DISABLE_NORMAL_PRINTS
 		#undef DISABLE_NORMAL_PRINTS
 	#endif
 #endif
 
 // Initial delays needed for the sensors to stabilize
-#define sixDOF_CRITICAL_DELAY 20
-#define VL6180_CRITICAL_DELAY 20
+#define sixDOF_CRITICAL_DELAY 60
+#define VL6180_CRITICAL_DELAY 300
 
 // Other delays
-#define MAIN_LOOP_CRITICAL_DELAY 10
+#define MAIN_LOOP_CRITICAL_DELAY 60
 
 #endif

@@ -19,6 +19,10 @@
 		#define DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 	#endif
 
+	#ifndef DEBUG_FUNC_FLOW__USE_VL6180
+		#define DEBUG_FUNC_FLOW__USE_VL6180
+	#endif
+
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
@@ -31,8 +35,30 @@
 	#endif
 #endif
 
+// #define DEBUG_FUNC_FLOW__USE_VL6180
+#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// #define DEBUG_MILIS__BYPASS_AGENT__
+#ifdef DEBUG_MILIS__BYPASS_AGENT__
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+
 // #define DEBUG_PRINT_sixDOF_Tenssy3
 #ifdef DEBUG_PRINT_sixDOF_Tenssy3
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// #define DEBUG_PRINT_USE_VL6180
+#ifdef DEBUG_PRINT_USE_VL6180
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
