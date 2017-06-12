@@ -15,10 +15,10 @@ void toggle(){
 	#else
 		if (digitalReadFast(RECIEVE_ENABLE) == HIGH){
 			state = DISABLED;
-			toggle(DISABLED);
+			toggle_state(DISABLED);
 		} else {
 			state = ENABLED;
-			toggle(ENABLED);
+			toggle_state(ENABLED);
 		}	  	
 	#endif
 }

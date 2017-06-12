@@ -8,6 +8,8 @@
 #include <Arduino.h>
 // #include "digitalWriteFast.h"
 
+//#define MULTIPLE_STEPS
+
 #define ENABLED LOW
 #define DISABLED HIGH
 #define DELAY_TIME 10
@@ -27,12 +29,12 @@ extern int g_steps_gained_from_marlin;
 extern bool g_wrote_dir;
 
 
-void toggle(byte state);
+void toggle_state(byte state);
 void apply_steps(int num_of_steps);
 void set_direction();
 
-void _enable();
-void _disable();
+FORCE_INLINE void _enable();
+FORCE_INLINE void _disable();
 
 
 
