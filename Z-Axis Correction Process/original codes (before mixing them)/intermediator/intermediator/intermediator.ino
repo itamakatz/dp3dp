@@ -1,11 +1,4 @@
-
 #include "stepper_corrections.h"
-
-
-
-volatile byte state = ENABLED;
-
-
 
 void setup(){
 
@@ -27,7 +20,6 @@ void setup(){
 
 }
 
-
 void loop(){
 
 	
@@ -40,9 +32,6 @@ void loop(){
 		Serial.print("state is: ");
 		Serial.println(state ? "DISABLED": "ENABLED");  
 	#endif
-
-	
-
 }
 
 inline void keep_step_low(){
