@@ -7,20 +7,12 @@
 int g_steps_gained_from_marlin = 0;
 
 
-FORCE_INLINE void _enable() {
-	digitalWriteFast(PASS_ENABLE, ENABLED);
-}
-
-FORCE_INLINE void _disable() {
-	digitalWriteFast(PASS_ENABLE, DISABLED);
-}
-
 
 void toggle_state(byte state){
 	if (state == ENABLED){
-		_enable();
+		digitalWriteFast(PASS_ENABLE, ENABLED);
 	} else {
-		_disable();
+		digitalWriteFast(PASS_ENABLE, DISABLED);
 	}
 }
 
@@ -38,7 +30,7 @@ void apply_steps(int num_of_steps) {
 }
 
 
-void set_direction() {
+void direction_received() {
 	digitalWriteFast(PASS_DIR, digitalReadFast(RECIEVE_DIR));
 }
 

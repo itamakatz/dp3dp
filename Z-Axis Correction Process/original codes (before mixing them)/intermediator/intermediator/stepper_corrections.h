@@ -33,14 +33,10 @@ extern int g_steps_gained_from_marlin;
 
 void toggle();			// interrupt isr
 void step_received();	// interrupt isr
-void set_direction();	// interrupt isr
+void direction_received();	// interrupt isr
 
 void toggle_state(byte state);
 void apply_steps(int num_of_steps);
-
-
-FORCE_INLINE void _enable();
-FORCE_INLINE void _disable();
 
 
 
