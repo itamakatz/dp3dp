@@ -5,7 +5,6 @@
 #include "stepper_corrections.h"
 
 int g_steps_gained_from_marlin = 0;
-bool g_wrote_dir = false;
 
 
 FORCE_INLINE void _enable() {
@@ -14,7 +13,6 @@ FORCE_INLINE void _enable() {
 
 FORCE_INLINE void _disable() {
 	digitalWriteFast(PASS_ENABLE, DISABLED);
-	g_wrote_dir = false;
 }
 
 
@@ -41,8 +39,35 @@ void apply_steps(int num_of_steps) {
 
 
 void set_direction() {
-	if (g_wrote_dir) return;
-	int dir = digitalReadFast(RECIEVE_DIR);
-	digitalWriteFast(PASS_DIR, dir);
-	g_wrote_dir = true;
+	digitalWriteFast(PASS_DIR, digitalReadFast(RECIEVE_DIR));
+}
+
+
+void toggle(){
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("in toggle");
+		Serial.print("state is: ");
+		Serial.println(state ? "DISABLED": "ENABLED");  
+	#else
+		if (digitalReadFast(RECIEVE_ENABLE) == HIGH){
+			state = DISABLED;
+			toggle_state(DISABLED);
+		} else {
+			state = ENABLED;
+			toggle_state(ENABLED);
+		}	  	
+	#endif
+}
+
+
+void step_received(){ // it's marlin's turn
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("in step_recieved");
+		Serial.print("state is: ");
+		Serial.println(state ? "DISABLED": "ENABLED");
+	#else
+		if (state == ENABLED){
+		  	apply_steps(1);
+		}
+	#endif
 }

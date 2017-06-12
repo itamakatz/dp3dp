@@ -1,41 +1,9 @@
 
 #include "stepper_corrections.h"
 
-//#define DEBUG_INTERRUPTS
-//#define DEBUG_LOOP
+
 
 volatile byte state = ENABLED;
-
-
-void toggle(){
-	#ifdef DEBUG_INTERRUPTS
-		Serial.println("in toggle");
-		Serial.print("state is: ");
-		Serial.println(state ? "DISABLED": "ENABLED");  
-	#else
-		if (digitalReadFast(RECIEVE_ENABLE) == HIGH){
-			state = DISABLED;
-			toggle_state(DISABLED);
-		} else {
-			state = ENABLED;
-			toggle_state(ENABLED);
-		}	  	
-	#endif
-}
-
-
-void step_received(){ // it's marlin's turn
-	#ifdef DEBUG_INTERRUPTS
-		Serial.println("in step_recieved");
-		Serial.print("state is: ");
-		Serial.println(state ? "DISABLED": "ENABLED");
-	#else
-		if (state == ENABLED){
-			set_direction();
-		  	apply_steps(1);
-		}
-	#endif
-}
 
 
 
@@ -53,6 +21,7 @@ void setup(){
   
   	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, CHANGE);
   	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, RISING);
+  	attachInterrupt(digitalPinToInterrupt(RECIEVE_DIR), set_direction, CHANGE);
 
 	delay(3000);
 
