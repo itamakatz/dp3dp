@@ -6,7 +6,7 @@
 #define STEPPER_CORRECTIONS_H
 
 #include <Arduino.h>
-#include "digitalWriteFast.h"
+// #include "digitalWriteFast.h"
 
 #define ENABLED LOW
 #define DISABLED HIGH
@@ -30,6 +30,9 @@ extern bool g_wrote_dir;
 void toggle(byte state);
 void apply_steps(int num_of_steps);
 void set_direction();
+
+void _enable();
+void _disable();
 
 
 

@@ -8,32 +8,33 @@ volatile byte state = ENABLED;
 
 
 void toggle(){
-    #ifdef DEBUG_INTERRUPTS
-        Serial.println("in toggle");
-        Serial.print("state is: ");
-        Serial.println(state ? "DISABLED": "ENABLED");  
-    #else
-        if (digitalReadFast(RECIEVE_ENABLE) == HIGH){
-            state = DISABLED;
-            toggle(DISABLED);
-        } else {
-            return;
-        }      	
-    #endif
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("in toggle");
+		Serial.print("state is: ");
+		Serial.println(state ? "DISABLED": "ENABLED");  
+	#else
+		if (digitalReadFast(RECIEVE_ENABLE) == HIGH){
+			state = DISABLED;
+			toggle(DISABLED);
+		} else {
+			state = ENABLED;
+			toggle(ENABLED);
+		}	  	
+	#endif
 }
 
 
 void step_received(){ // it's marlin's turn
-    #ifdef DEBUG_INTERRUPTS
-        Serial.println("in step_recieved");
-        Serial.print("state is: ");
-        Serial.println(state ? "DISABLED": "ENABLED");
-    #else
-        if (state == ENABLED){
-            set_direction();
-          	apply_steps(1);
-        }
-    #endif
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("in step_recieved");
+		Serial.print("state is: ");
+		Serial.println(state ? "DISABLED": "ENABLED");
+	#else
+		if (state == ENABLED){
+			set_direction();
+		  	apply_steps(1);
+		}
+	#endif
 }
 
 
@@ -53,29 +54,29 @@ void setup(){
   	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, CHANGE);
   	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, RISING);
 
-    delay(3000);
+	delay(3000);
 
 }
 
 
 void loop(){
 
-    
-    // examine the sensor constantly. (according to _steps_gained_from_marlin)
-    // repair it.
-    
-    keep_step_low();
+	
+	// examine the sensor constantly. (according to _steps_gained_from_marlin)
+	// repair it.
+	
+	keep_step_low();
   
-    #ifdef DEBUG_LOOP
-        Serial.print("state is: ");
-        Serial.println(state ? "DISABLED": "ENABLED");  
-    #endif
+	#ifdef DEBUG_LOOP
+		Serial.print("state is: ");
+		Serial.println(state ? "DISABLED": "ENABLED");  
+	#endif
 
-    
+	
 
 }
 
 inline void keep_step_low(){
-    digitalWriteFast(PASS_STEP, LOW);
+	digitalWriteFast(PASS_STEP, LOW);
 }
 

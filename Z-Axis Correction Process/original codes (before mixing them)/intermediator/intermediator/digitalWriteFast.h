@@ -137,12 +137,12 @@
 
 // --- Arduino Mega ---
 #elif (defined(ARDUINO_AVR_MEGA) || \
-       defined(ARDUINO_AVR_MEGA1280) || \
-       defined(ARDUINO_AVR_MEGA2560) || \
-       defined(__AVR_ATmega1280__) || \
-       defined(__AVR_ATmega1281__) || \
-       defined(__AVR_ATmega2560__) || \
-       defined(__AVR_ATmega2561__))
+	defined(ARDUINO_AVR_MEGA1280) || \
+	defined(ARDUINO_AVR_MEGA2560) || \
+	defined(__AVR_ATmega1280__) || \
+	defined(__AVR_ATmega1281__) || \
+	defined(__AVR_ATmega2560__) || \
+	defined(__AVR_ATmega2561__))
 
 #define UART_RX_PIN     (0) //PE0
 #define UART_TX_PIN     (1) //PE1
@@ -211,7 +211,7 @@
 
 // --- Arduino 644 ---
 #elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))
+	defined(__AVR_ATmega644P__))
 
 #define UART_RX_PIN     (8) //PD0
 #define UART_TX_PIN     (9) //PD1
@@ -236,8 +236,8 @@
 
 // --- Arduino Leonardo ---
 #elif (defined(ARDUINO_AVR_LEONARDO) || \
-       defined(__AVR_ATmega16U4__) || \
-       defined(__AVR_ATmega32U4__))
+	defined(__AVR_ATmega16U4__) || \
+	defined(__AVR_ATmega32U4__))
 
 #define UART_RX_PIN     (0) //PD2
 #define UART_TX_PIN     (1) //PD3
@@ -262,11 +262,11 @@
 
 // --- Arduino Uno ---
 #elif (defined(ARDUINO_AVR_UNO) || \
-       defined(ARDUINO_AVR_DUEMILANOVE) || \
-       defined(ARDUINO_ARCH_AVR) || \
-       defined(__AVR_ATmega328__) || \
-       defined(__AVR_ATmega328P__) || \
-       defined(__AVR__))
+	defined(ARDUINO_AVR_DUEMILANOVE) || \
+	defined(ARDUINO_ARCH_AVR) || \
+	defined(__AVR_ATmega328__) || \
+	defined(__AVR_ATmega328P__) || \
+	defined(__AVR__))
 
 #define UART_RX_PIN     (0) //PD0
 #define UART_TX_PIN     (1) //PD1
