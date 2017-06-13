@@ -6,7 +6,7 @@
 
 int g_steps_gained_from_marlin = 0;
 
-
+volatile byte state = ENABLED;
 
 void toggle_state(byte state){
 	if (state == ENABLED){

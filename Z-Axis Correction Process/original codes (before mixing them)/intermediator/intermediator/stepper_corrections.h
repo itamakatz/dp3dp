@@ -30,6 +30,7 @@
 
 extern int g_steps_gained_from_marlin;
 
+extern volatile byte state;
 
 void toggle();			// interrupt isr
 void step_received();	// interrupt isr
