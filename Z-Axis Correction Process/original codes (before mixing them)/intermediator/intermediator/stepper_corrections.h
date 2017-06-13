@@ -6,7 +6,6 @@
 #define STEPPER_CORRECTIONS_H
 
 #include <Arduino.h>
-// #include "digitalWriteFast.h"
 
 //#define DEBUG_INTERRUPTS
 //#define DEBUG_LOOP

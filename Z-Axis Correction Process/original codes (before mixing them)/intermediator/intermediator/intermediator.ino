@@ -32,11 +32,7 @@ void loop(){
 		Serial.print("state is: ");
 		Serial.println(state ? "DISABLED": "ENABLED");  
 	#endif
-<<<<<<< HEAD
 
-	
-=======
->>>>>>> 353893e88d2600e719aba1ab500a63c330c381af
 }
 
 
