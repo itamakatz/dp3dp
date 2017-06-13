@@ -42,8 +42,8 @@ void loop(){
 	#endif
 
 	
-
 }
+
 
 inline void keep_step_low(){
 	digitalWriteFast(PASS_STEP, LOW);
