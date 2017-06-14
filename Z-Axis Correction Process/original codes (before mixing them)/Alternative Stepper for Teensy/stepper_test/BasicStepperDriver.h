@@ -100,5 +100,9 @@ public:
      */
     void enable(void);
     void disable(void);
+
+    unsigned long get_step_pulse(){
+        return step_pulse;
+    }
 };
 #endif // STEPPER_DRIVER_BASE_H

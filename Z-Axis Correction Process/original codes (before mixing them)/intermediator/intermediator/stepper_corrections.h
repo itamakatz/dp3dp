@@ -3,8 +3,21 @@
 
 #include <Arduino.h>
 
-//#define DEBUG_INTERRUPTS
-//#define DEBUG_LOOP
+// #define DEBUG_INTERRUPTS
+// #define DEBUG_LOOP
+// #define SERIAL_INIT
+
+#ifdef DEBUG_INTERRUPTS
+	#ifndef SERIAL_INIT
+		#define SERIAL_INIT
+	#endif
+#endif
+
+#ifdef DEBUG_LOOP
+	#ifndef SERIAL_INIT
+		#define SERIAL_INIT
+	#endif
+#endif
 
 #define ENABLED LOW
 #define DISABLED HIGH
@@ -18,12 +31,7 @@
 #define PASS_DIR          8    // connected to DIR pin 19 of the stepper driver 
 
 void toggle();			// interrupt isr
-// void step_received();	// interrupt isr
 void direction_received();	// interrupt isr
-
-void step_received_rising();	// interrupt isr
-void step_received_falling();	// interrupt isr
-
-
+void step_received();	// interrupt isr
 
 #endif //STEPPER_CORRECTIONS_H
