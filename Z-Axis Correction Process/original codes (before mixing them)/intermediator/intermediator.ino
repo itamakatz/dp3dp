@@ -16,7 +16,6 @@ void setup(){
 
 	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(RECIEVE_DIR), direction_received, CHANGE);
-
 	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, CHANGE);
 
 	delay(3000);
