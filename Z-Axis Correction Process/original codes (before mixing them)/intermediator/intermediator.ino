@@ -14,11 +14,15 @@ void setup(){
 	pinMode(PASS_STEP, OUTPUT);
 	pinMode(PASS_DIR, OUTPUT);
 
-	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(RECIEVE_DIR), direction_received, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), enable_received, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_DIR), dir_received, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, CHANGE);
 
-	delay(3000);
+
+	digitalWriteFast(PASS_ENABLE, digitalReadFast(RECIEVE_ENABLE));
+	digitalWriteFast(PASS_DIR, digitalReadFast(RECIEVE_DIR));
+
+	// delay(3000);
 }
 
 void loop(){

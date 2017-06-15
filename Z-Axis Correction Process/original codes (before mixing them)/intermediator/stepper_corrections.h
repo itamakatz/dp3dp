@@ -19,19 +19,16 @@
 	#endif
 #endif
 
-#define ENABLED LOW
-#define DISABLED HIGH
+#define RECIEVE_ENABLE    2 // Green
+#define RECIEVE_STEP      3 // Yellow
+#define RECIEVE_DIR       4 // Blue
 
-#define RECIEVE_ENABLE    2    // connected to Z_ENABLE_PIN 62 of the teensy - interrupt pin
-#define RECIEVE_STEP      3    // connected to Z_STEP_PIN 46 of the teensy   - interrupt pin
-#define RECIEVE_DIR       4    // connected to Z_DIR_PIN 48 of the teensy    - interrupt pin
+#define PASS_ENABLE       6 // Green
+#define PASS_STEP         7 // Yellow
+#define PASS_DIR          8 // Blue
 
-#define PASS_ENABLE       6    // connected to ENABLE pin 2 of the stepper driver 
-#define PASS_STEP         7    // connected to STEP pin 16 of the stepper driver 
-#define PASS_DIR          8    // connected to DIR pin 19 of the stepper driver 
-
-void toggle();			// interrupt isr
-void direction_received();	// interrupt isr
-void step_received();	// interrupt isr
+void enable_received();
+void dir_received();
+void step_received();
 
 #endif //STEPPER_CORRECTIONS_H
