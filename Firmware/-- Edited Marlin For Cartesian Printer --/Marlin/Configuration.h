@@ -513,13 +513,13 @@
  *		(with a 80 teeth big gear it would be 2000)
 */
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100.00, 100.00, 3200.00, 372.00}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 160.00, 30.00, 2000.00, 372.00}
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 1000 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 100, 5, 1000 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -527,7 +527,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 2800, 2800, 100, 1000 }
+#define DEFAULT_MAX_ACCELERATION      { 100, 100, 100, 1000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
