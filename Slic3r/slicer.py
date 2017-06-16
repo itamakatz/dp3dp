@@ -201,7 +201,8 @@ def parse(path):
                 G0_G1_gcode()
                 break
             if case("G28"):
-                # don't add it to the new gcode file
+                # make a new endstop
+                g_updated_commands.append("G1 X3 Y0")
                 break
             # default, the code is intact
             g_updated_commands.append(join(g_command_args))
@@ -220,6 +221,6 @@ def check():
 
 if __name__ == "__main__":
     # check()
-    parse("sq.gcode")
+    parse("rs.gcode")
     # parse(relpath(sys.argv[1]))
 
