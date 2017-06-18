@@ -68,7 +68,7 @@ def change_coordinates(X, Y):
     R = math.hypot(X, Y)
     # compute the arc length, by the radius and the angle
     # if it makes trouble, comment it and uncomment the next line
-    alpha = math.atan2(Y, X) * R
+    alpha = math.atan2(Y, X)
     # alpha = math.degrees(math.atan2(Y, X))
 
     g_current_R_position = R
@@ -221,6 +221,6 @@ def check():
 
 if __name__ == "__main__":
     # check()
-    parse("rs.gcode")
+    parse("cs.gcode")
     # parse(relpath(sys.argv[1]))
 
