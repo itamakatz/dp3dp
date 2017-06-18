@@ -42,7 +42,6 @@ void setup(){
 
 void loop(){
 
-	// intermediator_loop();
 	distance = VL6180_object.read_distance();
 	sixDOF_object.sixDOF_loop();
 	sixDOF_object.get_angles(&angles_Euler[0]);
@@ -128,7 +127,12 @@ void check_key(){
 			#endif
 			sixDOF_object.set_zero();
 			Serial.println("Calibrated values to zero");
-		}
-	
+		} else if (incomingByte == 3){
+			#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+				Serial.println("incomingByte == 3");
+			#endif
+			sixDOF_object.sixDOF_setup((float)0.1);
+			Serial.println("Run sixDOF_setup again");
+		}	
 	}
 }
