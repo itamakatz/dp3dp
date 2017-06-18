@@ -1,16 +1,14 @@
 #ifndef __PINS__
 #define __PINS__
 
-// #define RECIEVE_ENABLE 2 // connected to Z_ENABLE_PIN 62 of the mega
-// #define int RECIEVE_STEP 3		// connected to Z_STEP_PIN 46 of the mega
-// #define int RECIEVE_DIR 4		 // connected to Z_DIR_PIN 48 of the mega
-
-const int RECIEVE_ENABLE = 2; // connected to Z_ENABLE_PIN 62 of the mega
-const int PASS_ENABLE = 8;		// connected to ENABLE pin 2 of the stepper driver 
 const int MCP_SELECT_CH = 10;		// connected to ENABLE pin 2 of the stepper driver 
 
-// #define PASS_ENABxLE 8		// connected to ENABLE pin 2 of the stepper driver 
-// #define int PASS_STEP 13			// connected to STEP pin 16 of the stepper driver 
-// #define int PASS_DIR 12			 // connected to DIR pin 19 of the stepper driver 
+#define RECIEVE_ENABLE    2 // Green
+#define RECIEVE_STEP      3 // Yellow
+#define RECIEVE_DIR       4 // Blue
+
+#define PASS_ENABLE       6 // Green
+#define PASS_STEP         7 // Yellow
+#define PASS_DIR          8 // Blue 
 
 #endif

@@ -16,6 +16,7 @@
 // Initial delays needed for the sensors to stabilize
 #define sixDOF_CRITICAL_DELAY 60
 #define VL6180_CRITICAL_DELAY 300
+#define INTERMEDIATOR_DELAY 3000
 
 // Other delays
 #define MAIN_LOOP_CRITICAL_DELAY 60

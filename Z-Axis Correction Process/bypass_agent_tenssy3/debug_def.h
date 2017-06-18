@@ -64,4 +64,12 @@
 	#endif
 #endif
 
+
+// #define DEBUG_INTERRUPTS
+#ifdef DEBUG_INTERRUPTS
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
 #endif
