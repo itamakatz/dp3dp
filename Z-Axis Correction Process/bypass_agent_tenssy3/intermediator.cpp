@@ -1,39 +1,50 @@
 #include "intermediator.h"
-
-volatile bool state = true;
-
-void toggle_enabled_pin(){
-	cli();
-	state = !state;
-	// digitalWrite(PASS_ENABLE, digitalRead(RECIEVE_ENABLE));
-	digitalWrite(PASS_ENABLE, state);
-	// digitalWrite(7, !state);
-	Serial.println("enable_FALLING");
-	sei();
-}
+#include "general_defs.h"
 
 void intermediator_setup(){
 
-	Serial.println("intermediator_setup");
+	cli();
 
-	// pinMode(RECIEVE_ENABLE, INPUT_PULLUP);
 	pinMode(RECIEVE_ENABLE, INPUT);
-	// pinMode(7, OUTPUT);
+	pinMode(RECIEVE_STEP, INPUT);
+	pinMode(RECIEVE_DIR, INPUT);
 
 	pinMode(PASS_ENABLE, OUTPUT);
+	pinMode(PASS_STEP, OUTPUT);
+	pinMode(PASS_DIR, OUTPUT);
 
-	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), toggle_enabled_pin, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_ENABLE), enable_received, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_DIR), dir_received, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(RECIEVE_STEP), step_received, CHANGE);
+
+	digitalWriteFast(PASS_ENABLE, digitalReadFast(RECIEVE_ENABLE));
+	digitalWriteFast(PASS_DIR, digitalReadFast(RECIEVE_DIR));
+
+	sei();
+
+	// delay(INTERMEDIATOR_DELAY);
 }
 
-void intermediator_loop(){
+void enable_received() {
+	digitalWriteFast(PASS_ENABLE, digitalReadFast(RECIEVE_ENABLE));
 
-	Serial.print("RECIEVE_ENABLE is:");
-	Serial.println(digitalRead(RECIEVE_ENABLE));
-	
-	state = digitalRead(RECIEVE_ENABLE);
-	digitalWrite(PASS_ENABLE, state);
-	// digitalWrite(7, !state);
-	
-	Serial.print("state is:");
-	Serial.println(state);
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("enable_received");
+	#endif
+}
+
+void step_received() {
+	digitalWriteFast(PASS_STEP, digitalReadFast(RECIEVE_STEP));
+
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("step_received");
+	#endif
+}
+
+void dir_received() {
+	digitalWriteFast(PASS_DIR, digitalReadFast(RECIEVE_DIR));
+
+	#ifdef DEBUG_INTERRUPTS
+		Serial.println("dir_received");
+	#endif
 }

@@ -26,7 +26,7 @@ void setup(){
 		Serial.println("setup: after Wire.begin()");
 	#endif
 
-	// intermediator_setup();
+	intermediator_setup();
 	sixDOF_object.sixDOF_setup((float)0.1);
 	VL6180_object.VL6180_setup();
 
