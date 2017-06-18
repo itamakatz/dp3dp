@@ -15,6 +15,10 @@
 		#define DEBUG_FUNC_FLOW__SIX_DFO__
 	#endif
 
+	#ifndef DEBUG_FUNC_FLOW__VL6180__
+		#define DEBUG_FUNC_FLOW__VL6180__
+	#endif
+
 	#ifndef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 		#define DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 	#endif

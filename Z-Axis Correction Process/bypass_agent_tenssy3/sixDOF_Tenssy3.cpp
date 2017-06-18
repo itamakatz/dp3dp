@@ -8,13 +8,13 @@ void sixDOF_Tenssy3::sixDOF_setup(float alpha) {
 
 	delay(sixDOF_CRITICAL_DELAY);
 
-	memset(_average,0,sizeof(_average));
-	memset(_average_zero_offset,0,sizeof(_average_zero_offset));
+	memset(_average, 0, sizeof(_average));
+	memset(_average_zero_offset, 0, sizeof(_average_zero_offset));
 
-	memset(_angles_Euler,0,sizeof(_angles_Euler));
-	memset(_angles_Euler_zero_offset,0,sizeof(_angles_Euler_zero_offset));
+	memset(_angles_Euler, 0, sizeof(_angles_Euler));
+	memset(_angles_Euler_zero_offset, 0, sizeof(_angles_Euler_zero_offset));
 
-	memset(_c_array_elements,0,sizeof(_c_array_elements));
+	memset(_c_array, 0, sizeof(_c_array));
 
 	_alpha = alpha;
 
@@ -33,7 +33,7 @@ void sixDOF_Tenssy3::_init_samples(){
 		Serial.println("sixDOF_Tenssy3::_init_samples");
 	#endif
 
-	for (double i = 0.0; i < C_ARRAY_SIZE; ++i) {
+	for (double i = 0.0; i < CYC_ARRAY_SIZE_6DoF; ++i) {
 		FsixDOF_Tenssy3.getEuler(_angles_Euler);
 		for (int j = 0; j < 3; ++j){
 			_c_array[j].insert(_angles_Euler[j]);
@@ -65,10 +65,10 @@ void sixDOF_Tenssy3::sixDOF_loop() {
 		Serial.println("sixDOF_Tenssy3::sixDOF_loop - after insert");
 	#endif
 
-	update_average();
+	_update_average();
 
 	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_loop - after update_average");
+		Serial.println("sixDOF_Tenssy3::sixDOF_loop - after _update_average");
 	#endif
 }
 
@@ -79,10 +79,10 @@ void sixDOF_Tenssy3::set_zero(){
 	}
 }
 
-void sixDOF_Tenssy3::update_average(){
+void sixDOF_Tenssy3::_update_average(){
 
 	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::update_average");
+		Serial.println("sixDOF_Tenssy3::_update_average");
 	#endif
 
 	// since the exponential window is recursive, set the first average value as an initial condition
@@ -91,7 +91,7 @@ void sixDOF_Tenssy3::update_average(){
 	}
 
 	// note i = 1 due to the above
-	for (int i = 1; i < C_ARRAY_SIZE; ++i){
+	for (int i = 1; i < CYC_ARRAY_SIZE_6DoF; ++i){
 		for (int j = 0; j < 3; ++j) {
 			_average[j] = _alpha * _average[j] + (1 - _alpha) * _c_array[j].get_cyc_array_single(i);
 		}

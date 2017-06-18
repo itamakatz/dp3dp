@@ -1,4 +1,4 @@
-#include "use_MCP3202.h"
+#include "MCP3202.h"
 
 // #include <StandardCplusplus.h>
 // #include <iterator>

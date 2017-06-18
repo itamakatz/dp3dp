@@ -20,11 +20,11 @@ private:
 	float _angles_Euler[3];
 	float _angles_Euler_zero_offset[3];
 	
-	float _c_array_elements[3];
 	float _weights;
 	float _alpha;
+
 	void _init_samples();
-	void update_average(); 
+	void _update_average(); 
 
 public:
 	sixDOF_Tenssy3(){}

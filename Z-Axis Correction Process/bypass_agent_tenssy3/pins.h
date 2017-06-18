@@ -1,8 +1,6 @@
 #ifndef __PINS__
 #define __PINS__
 
-const int MCP_SELECT_CH = 10;		// pin to select channel of the ADC
-
 #define RECIEVE_ENABLE    2 // Green
 #define RECIEVE_STEP      3 // Yellow
 #define RECIEVE_DIR       4 // Blue

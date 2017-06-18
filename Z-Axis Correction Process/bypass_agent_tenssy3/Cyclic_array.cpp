@@ -17,14 +17,14 @@ void Cyclic_array::get_cyc_array(float* get_array){
 
 	int index = front;
 
-	for (int i = 0; i < C_ARRAY_SIZE; ++i)
+	for (int i = 0; i < CYC_ARRAY_SIZE; ++i)
 	{
 		get_array[i] = array[index];
 		
 		index--;
 
 		if (index < 0) {
-			index += C_ARRAY_SIZE;
+			index += CYC_ARRAY_SIZE;
 		}
 	}
 
@@ -41,7 +41,7 @@ float Cyclic_array::get_cyc_array_single(int i){
 	int index = front - i;
 
 	if (index < 0) {
-		index += C_ARRAY_SIZE;
+		index += CYC_ARRAY_SIZE;
 	}
 	return array[index];
 }
@@ -51,7 +51,7 @@ bool Cyclic_array::isEmpty() {
 }
 
 bool Cyclic_array::isFull() {
-	return itemCount == C_ARRAY_SIZE - 1;
+	return itemCount == CYC_ARRAY_SIZE - 1;
 }
 
 int Cyclic_array::size() {
@@ -67,11 +67,11 @@ void Cyclic_array::insert(float data) {
 	front++;
 
 	// if not full increase count.
-	// if front >= C_ARRAY_SIZE due to cyclicity, start from 0
+	// if front >= CYC_ARRAY_SIZE due to cyclicity, start from 0
 	// regardless of the above, insert the data element
 	if(!isFull()) {
 		itemCount++;
-	} else if (front >= C_ARRAY_SIZE) {
+	} else if (front >= CYC_ARRAY_SIZE) {
 		front = 0;
 	}
 

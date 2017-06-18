@@ -1,5 +1,5 @@
-#include "use_VL6180.h"
-// #include "use_MCP3202.h"
+#include "VL6180.h"
+// #include "MCP3202.h"
 #include "sixDOF_Tenssy3.h"
 #include "intermediator.h"
 
@@ -10,7 +10,7 @@
 Metro led_metro = Metro(METRO_HIGH_INTERVAL);
 bool led_state = false;
 
-uint16_t distance = 0;
+float distance = 0;
 float angles_Euler[3] = {0};
 float angles_Euler_average[3] = {0};
 sixDOF_Tenssy3 sixDOF_object = sixDOF_Tenssy3();
@@ -30,8 +30,8 @@ void setup(){
 	#endif
 
 	intermediator_setup();
-	sixDOF_object.sixDOF_setup((float)0.1);
-	VL6180_object.VL6180_setup();
+	sixDOF_object.sixDOF_setup(sixDOF_ALPHA);
+	VL6180_object.VL6180_setup(VL6180_ALPHA);
 	pinMode(LED_PIN, OUTPUT);  
 
 	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
@@ -46,9 +46,15 @@ void setup(){
 
 void loop(){
 
+	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+		Serial.println("loop: beginning");
+	#endif
+
 	check_metro();
 
-	distance = VL6180_object.read_distance();
+	VL6180_object.VL6180_loop();
+	distance = VL6180_object.get_average();
+
 	sixDOF_object.sixDOF_loop();
 	sixDOF_object.get_angles(&angles_Euler[0]);
 	sixDOF_object.get_average(&angles_Euler_average[0]);

@@ -13,7 +13,7 @@
 
 class Cyclic_array {
 private:
-	float array[C_ARRAY_SIZE];
+	float array[CYC_ARRAY_SIZE];
 	int front = 0;
 	int rear = -1;
 	int itemCount = 0;
