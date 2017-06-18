@@ -73,4 +73,4 @@ def refine(path):
 
 
 if __name__ == "__main__":
-    refine("csv4_updated.gcode")
+    refine("csv6_updated.gcode")

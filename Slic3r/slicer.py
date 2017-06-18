@@ -221,6 +221,6 @@ def check():
 
 if __name__ == "__main__":
     # check()
-    parse("csv4.gcode")
+    parse("csv6.gcode")
     # parse(relpath(sys.argv[1]))
 
