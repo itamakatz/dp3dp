@@ -21,4 +21,8 @@
 // Other delays
 #define MAIN_LOOP_CRITICAL_DELAY 60
 
+// Blincking led timing
+#define METRO_HIGH_INTERVAL 250
+#define METRO_LOW_INTERVAL 1000
+
 #endif

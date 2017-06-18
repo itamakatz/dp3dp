@@ -5,7 +5,10 @@
 
 #include <i2c_t3.h>
 #include "general_defs.h"
+#include <Metro.h>
 
+Metro led_metro = Metro(METRO_HIGH_INTERVAL);
+bool led_state = false;
 
 uint16_t distance = 0;
 float angles_Euler[3] = {0};
@@ -29,6 +32,7 @@ void setup(){
 	intermediator_setup();
 	sixDOF_object.sixDOF_setup((float)0.1);
 	VL6180_object.VL6180_setup();
+	pinMode(LED_PIN, OUTPUT);  
 
 	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
 		Serial.println("setup: after objects init");
@@ -41,6 +45,8 @@ void setup(){
 }
 
 void loop(){
+
+	check_metro();
 
 	distance = VL6180_object.read_distance();
 	sixDOF_object.sixDOF_loop();
@@ -71,6 +77,19 @@ void loop(){
 	#endif
 
 	delay(MAIN_LOOP_CRITICAL_DELAY);
+}
+
+void check_metro(){
+	if (led_metro.check()) { // check if the metro has passed its interval .
+		if (led_state == HIGH)  { 
+			led_state = LOW;
+			led_metro.interval(METRO_LOW_INTERVAL); // if the pin is LOW, set the interval to 0.25 seconds.
+		} else {
+			led_state = HIGH;
+			led_metro.interval(METRO_HIGH_INTERVAL); // if the pin is HIGH, set the interval to 1 second.
+		}
+		digitalWrite(LED_PIN, led_state);
+	}
 }
 
 void print_results(){
