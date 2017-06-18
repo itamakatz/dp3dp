@@ -12,7 +12,7 @@
 class sixDOF_Tenssy3 {
 private:
 	FreeSixIMU_Tenssy3 FsixDOF_Tenssy3; // FreeSixIMU object
-	Cyclic_array c_array;
+	Cyclic_array _c_array[3];
 
 	float _average[3];
 	float _average_zero_offset[3];

@@ -1,21 +1,41 @@
 #include "Cyclic_array.h"
 
-void Cyclic_array::peek(float* get_array){
+float Cyclic_array::peek(){
 
 	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 		Serial.println("Cyclic_array::peek");
 	#endif
 
-	for (int i = 0; i < 3; ++i)
+	return array[front];
+}
+
+void Cyclic_array::get_cyc_array(float* get_array){
+
+	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
+		Serial.println("Cyclic_array::get_cyc_array");
+	#endif
+
+	int index = front;
+
+	for (int i = 0; i < C_ARRAY_SIZE; ++i)
 	{
-		get_array[i] = array[front][i];
+		get_array[i] = array[index];
+		
+		index--;
+
+		if (index < 0) {
+			index += C_ARRAY_SIZE;
+		}
+	}
+
+	for (int j = 0; j < 3; ++j) {
 	}
 }
 
-void Cyclic_array::get_c_array(float* get_array, int i){
+float Cyclic_array::get_cyc_array_single(int i){
 
 	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		Serial.println("Cyclic_array::get_c_array");
+		Serial.println("Cyclic_array::get_cyc_array_single");
 	#endif
 
 	int index = front - i;
@@ -23,9 +43,7 @@ void Cyclic_array::get_c_array(float* get_array, int i){
 	if (index < 0) {
 		index += C_ARRAY_SIZE;
 	}
-	for (int j = 0; j < 3; ++j) {
-		get_array[j] = array[index][j];
-	}
+	return array[index];
 }
 
 bool Cyclic_array::isEmpty() {
@@ -40,7 +58,7 @@ int Cyclic_array::size() {
 	return itemCount;
 }
 
-void Cyclic_array::insert(float* array_data) {
+void Cyclic_array::insert(float data) {
 
 	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 		Serial.println("Cyclic_array::insert");
@@ -48,14 +66,14 @@ void Cyclic_array::insert(float* array_data) {
 
 	front++;
 
+	// if not full increase count.
+	// if front >= C_ARRAY_SIZE due to cyclicity, start from 0
+	// regardless of the above, insert the data element
 	if(!isFull()) {
 		itemCount++;
 	} else if (front >= C_ARRAY_SIZE) {
 		front = 0;
 	}
 
-	for (int i = 0; i < 3; ++i)
-	{
-		array[front][i] = array_data[i];
-	}
+	array[front] = data;
 }

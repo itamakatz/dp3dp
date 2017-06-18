@@ -13,19 +13,21 @@
 
 class Cyclic_array {
 private:
-	float array[C_ARRAY_SIZE][3];
+	float array[C_ARRAY_SIZE];
 	int front = 0;
 	int rear = -1;
 	int itemCount = 0;
 
 public:
 	Cyclic_array(){}
-	void peek(float* get_array);
-	void get_c_array(float* get_array, int i);
+	float peek();
+	void get_cyc_array(float* get_array);
+	float get_cyc_array_single(int i);
 	bool isEmpty();
 	bool isFull();
 	int size();
-	void insert(float* array_data);
+	void insert(float data);
 };
 
 #endif
+
