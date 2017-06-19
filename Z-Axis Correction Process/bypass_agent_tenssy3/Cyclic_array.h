@@ -13,13 +13,16 @@
 
 class Cyclic_array {
 private:
-	float array[CYC_ARRAY_SIZE];
-	int front = 0;
-	int rear = -1;
-	int itemCount = 0;
+	// float _array[CYC_ARRAY_SIZE];
+	float* _array;
+	int _front = 0;
+	int _itemCount = 0;
 
+	Cyclic_array();
+	
 public:
-	Cyclic_array(){}
+	Cyclic_array(int array_size);
+	~Cyclic_array();
 	float peek();
 	void get_cyc_array(float* get_array);
 	float get_cyc_array_single(int i);

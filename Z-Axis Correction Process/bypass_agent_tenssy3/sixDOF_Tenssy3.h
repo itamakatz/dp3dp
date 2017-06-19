@@ -12,7 +12,10 @@
 class sixDOF_Tenssy3 {
 private:
 	FreeSixIMU_Tenssy3 FsixDOF_Tenssy3; // FreeSixIMU object
-	Cyclic_array _c_array[3];
+	// Cyclic_array _c_array[3];
+	Cyclic_array _c_array[3] = {Cyclic_array(CYC_ARRAY_SIZE_6DoF),
+								Cyclic_array(CYC_ARRAY_SIZE_6DoF),
+								Cyclic_array(CYC_ARRAY_SIZE_6DoF)};
 
 	float _average[3];
 	float _average_zero_offset[3];
@@ -23,12 +26,13 @@ private:
 	float _weights;
 	float _alpha;
 
+	sixDOF_Tenssy3();
 	void _init_samples();
 	void _update_average(); 
 
 public:
-	sixDOF_Tenssy3(){}
-	void sixDOF_setup(float alpha);
+	sixDOF_Tenssy3(float alpha);
+	void sixDOF_setup();
 	void sixDOF_loop();
 	void set_zero();
 	void get_angles(float* angles_average);

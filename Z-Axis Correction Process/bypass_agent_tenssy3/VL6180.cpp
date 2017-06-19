@@ -1,17 +1,24 @@
 #include "VL6180.h"
 
-void VL6180::VL6180_setup(float alpha)
+VL6180::VL6180(float alpha){
+	_average = 0;
+	_alpha = alpha;
+}
+
+
+void VL6180::VL6180_setup()
 {
+	// _c_array = Cyclic_array(CYC_ARRAY_SIZE_VL6180);
+	
 	VL6180_sensor.init();
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after init()");
 	#endif
 
 	VL6180_sensor.configureDefault();
 
-
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after configureDefault()");
 	#endif
 
@@ -24,27 +31,27 @@ void VL6180::VL6180_setup(float alpha)
 	// VL6180_sensor.writeReg(VL6180X::SYSRANGE__MAX_CONVERGENCE_TIME, 30);
 	VL6180_sensor.writeReg(VL6180X_Tenssy3::SYSRANGE__MAX_CONVERGENCE_TIME, 30);
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after writeReg");
 	#endif
 
 	// VL6180_sensor.writeReg16Bit(VL6180X::SYSALS__INTEGRATION_PERIOD, 50);
 	VL6180_sensor.writeReg16Bit(VL6180X_Tenssy3::SYSALS__INTEGRATION_PERIOD, 50);
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after writeReg16");
 	#endif
 
 	VL6180_sensor.setTimeout(500);
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after setTimeout");
 	#endif
 
 	 // stop continuous mode if already active
 	VL6180_sensor.stopContinuous();
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after stopContinuous");
 	#endif
 
@@ -55,25 +62,20 @@ void VL6180::VL6180_setup(float alpha)
 	// start interleaved continuous mode with period of 100 ms
 	VL6180_sensor.startInterleavedContinuous(100);
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::VL6180_setup - after startInterleavedContinuous");
 	#endif
-
-	_average = 0;
-	_alpha = alpha;
-
-	_c_array = Cyclic_array();
 
 	_init_samples();
 }
 
 uint16_t VL6180::_read_distance(){
 
-	#ifdef DEBUG_FUNC_FLOW__USE_VL6180
+	#ifdef DEBUG_FUNC_FLOW_VL6180
 		Serial.println("VL6180::_read_distance");
 	#endif
 
-	#ifdef DEBUG_PRINT_USE_VL6180
+	#ifdef DEBUG_PRINT_VL6180
 		Serial.println(VL6180_sensor.readRangeContinuousMillimeters());
 		if (VL6180_sensor.timeoutOccurred()) { Serial.println("TIMEOUT"); }
 	#endif

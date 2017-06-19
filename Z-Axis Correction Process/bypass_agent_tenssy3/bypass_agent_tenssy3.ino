@@ -13,8 +13,8 @@ bool led_state = false;
 float distance = 0;
 float angles_Euler[3] = {0};
 float angles_Euler_average[3] = {0};
-sixDOF_Tenssy3 sixDOF_object = sixDOF_Tenssy3();
-VL6180 VL6180_object = VL6180();
+sixDOF_Tenssy3 sixDOF_object = sixDOF_Tenssy3(sixDOF_ALPHA);
+VL6180 VL6180_object = VL6180(VL6180_ALPHA);
 
 void setup(){
 
@@ -30,8 +30,8 @@ void setup(){
 	#endif
 
 	intermediator_setup();
-	sixDOF_object.sixDOF_setup(sixDOF_ALPHA);
-	VL6180_object.VL6180_setup(VL6180_ALPHA);
+	sixDOF_object.sixDOF_setup();
+	VL6180_object.VL6180_setup();
 	pinMode(LED_PIN, OUTPUT);  
 
 	#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
@@ -156,7 +156,7 @@ void check_key(){
 			#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
 				Serial.println("incomingByte == 3");
 			#endif
-			sixDOF_object.sixDOF_setup((float)0.1);
+			sixDOF_object.sixDOF_setup();
 			Serial.println("Run sixDOF_setup again");
 		}	
 	}

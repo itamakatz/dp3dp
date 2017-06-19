@@ -1,11 +1,6 @@
 #include "sixDOF_Tenssy3.h"
 
-void sixDOF_Tenssy3::sixDOF_setup(float alpha) {
-
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_setup");
-	#endif
-
+sixDOF_Tenssy3::sixDOF_Tenssy3(float alpha){
 	delay(sixDOF_CRITICAL_DELAY);
 
 	memset(_average, 0, sizeof(_average));
@@ -18,9 +13,17 @@ void sixDOF_Tenssy3::sixDOF_setup(float alpha) {
 
 	_alpha = alpha;
 
-	for (int j = 0; j < 3; ++j) {
-		_c_array[j] = Cyclic_array();
-	}
+	// for (int j = 0; j < 3; ++j) {
+	// 	// _c_array[j] = Cyclic_array(CYC_ARRAY_SIZE_6DoF);
+	// }
+}
+
+
+void sixDOF_Tenssy3::sixDOF_setup() {
+
+	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
+		Serial.println("sixDOF_Tenssy3::sixDOF_setup");
+	#endif
 
 	FsixDOF_Tenssy3 = FreeSixIMU_Tenssy3();
 	FsixDOF_Tenssy3.init();
