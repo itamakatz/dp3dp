@@ -19,7 +19,7 @@
       <file leaf-file-name="slicer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/slicer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2852">
+            <state relative-caret-position="-2810">
               <caret line="70" column="28" lean-forward="false" selection-start-line="70" selection-start-column="28" selection-end-line="70" selection-end-column="28" />
               <folding>
                 <element signature="e#163#174#0" expanded="true" />
@@ -51,8 +51,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/sublimer.py" />
-        <option value="$PROJECT_DIR$/slicer.py" />
         <option value="$PROJECT_DIR$/refiner.py" />
+        <option value="$PROJECT_DIR$/slicer.py" />
       </list>
     </option>
   </component>
@@ -446,7 +446,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/slicer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2852">
+        <state relative-caret-position="-2810">
           <caret line="70" column="28" lean-forward="false" selection-start-line="70" selection-start-column="28" selection-end-line="70" selection-end-column="28" />
           <folding>
             <element signature="e#163#174#0" expanded="true" />
