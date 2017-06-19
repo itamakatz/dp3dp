@@ -9,7 +9,7 @@
 #include "general_defs.h"
 #include "Cyc_array_6DoF.h"
 
-class sixDOF_Tenssy3 {
+class s6DoF_Tenssy3 {
 private:
 	FreeSixIMU_Tenssy3 _FsixDOF_Tenssy3; // FreeSixIMU object
 	Cyc_array_6DoF _c_array[3];
@@ -27,7 +27,7 @@ private:
 	void _update_average(); 
 
 public:
-	sixDOF_Tenssy3(){}
+	s6DoF_Tenssy3(){}
 	void sixDOF_setup(float alpha);
 	void sixDOF_loop();
 	void set_zero();

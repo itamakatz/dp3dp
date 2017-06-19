@@ -122,6 +122,16 @@
 	#endif
 #endif
 
+// =========================== stepper =========================== //
+
+// #define DEBUG_FUNC_FLOW_STEPPER
+#ifdef DEBUG_FUNC_FLOW_STEPPER
+	
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
 // =========================== Done =========================== //
 
 #endif
