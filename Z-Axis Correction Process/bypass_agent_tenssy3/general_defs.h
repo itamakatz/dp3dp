@@ -4,7 +4,10 @@
 #include "debug_def.h"
 #include "pins.h"
 
-#define C_ARRAY_SIZE 30
+// problem defining different windows using static allocation
+#define CYC_ARRAY_SIZE_6DoF 30
+#define CYC_ARRAY_SIZE_VL6180 30
+#define CYC_ARRAY_SIZE CYC_ARRAY_SIZE_VL6180
 
 #define ENABLE_NORMAL_PRINTS
 #ifdef ENABLE_NORMAL_PRINTS
@@ -20,5 +23,14 @@
 
 // Other delays
 #define MAIN_LOOP_CRITICAL_DELAY 60
+
+// Blincking led timing
+#define METRO_HIGH_INTERVAL 250
+#define METRO_LOW_INTERVAL 1000
+#define METRO_PRINT_INTERVAL 1000
+#define METRO_STEPPER_INTERVAL 5000
+
+#define sixDOF_ALPHA (float)0.1
+#define VL6180_ALPHA (float)0.1
 
 #endif

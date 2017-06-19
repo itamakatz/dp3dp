@@ -1,5 +1,5 @@
-#ifndef __USE_MCP3202__
-#define __USE_MCP3202__
+#ifndef __MCP3202__
+#define __MCP3202__
 
 #include <SPI.h>
 #include "MCP320X.h"

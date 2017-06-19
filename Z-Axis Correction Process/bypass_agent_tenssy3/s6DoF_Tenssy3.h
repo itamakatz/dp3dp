@@ -7,12 +7,12 @@
 
 #include <i2c_t3.h>
 #include "general_defs.h"
-#include "Cyclic_array.h"
+#include "Cyc_array_6DoF.h"
 
-class sixDOF_Tenssy3 {
+class s6DoF_Tenssy3 {
 private:
-	FreeSixIMU_Tenssy3 FsixDOF_Tenssy3; // FreeSixIMU object
-	Cyclic_array c_array;
+	FreeSixIMU_Tenssy3 _FsixDOF_Tenssy3; // FreeSixIMU object
+	Cyc_array_6DoF _c_array[3];
 
 	float _average[3];
 	float _average_zero_offset[3];
@@ -20,14 +20,14 @@ private:
 	float _angles_Euler[3];
 	float _angles_Euler_zero_offset[3];
 	
-	float _c_array_elements[3];
 	float _weights;
 	float _alpha;
+
 	void _init_samples();
-	void update_average(); 
+	void _update_average(); 
 
 public:
-	sixDOF_Tenssy3(){}
+	s6DoF_Tenssy3(){}
 	void sixDOF_setup(float alpha);
 	void sixDOF_loop();
 	void set_zero();

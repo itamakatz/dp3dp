@@ -1,4 +1,4 @@
-#include "use_MCP3202.h"
+#include "MCP3202.h"
 
 // #include <StandardCplusplus.h>
 // #include <iterator>
@@ -15,7 +15,7 @@ word current_word;
 // bool end_sampling;
 
 void MCP3202_setup() {
-	Serial.println("MCP3202_setup");
+	Serial.println(F("MCP3202_setup"));
 	SPI.begin();
 	adc.begin();
 	adc.setupSPI();
@@ -44,7 +44,7 @@ void MCP3202_loop() {
 		adc.deselect();
 		// current_word = analogRead(A5);
 		Serial.print(current_word);
-		Serial.print(",");
+		Serial.print(F(","));
 		Serial.println(micros());
 
 		// delayMicroseconds(MICROSECOND_DELAY);
@@ -56,11 +56,11 @@ void MCP3202_loop() {
 		// }
 	// } else if(!end_sampling and millis() >= 5000) {
 
-	// 	Serial.println("\n========== hist data: ==========\n");
+	// 	Serial.println(F("\n========== hist data: ==========\n"));
 
 	// 	for (std::map<word,int>::iterator it = hist.begin(); it != hist.end(); ++it){
 	// 		Serial.print(it->first);
-	// 		Serial.print(",");
+	// 		Serial.print(F(","));
 	// 		Serial.println(it->second);
 	// 	}
 
