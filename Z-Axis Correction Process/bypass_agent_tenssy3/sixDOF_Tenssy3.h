@@ -7,12 +7,12 @@
 
 #include <i2c_t3.h>
 #include "general_defs.h"
-#include "Cyclic_array.h"
+#include "Cyc_array_6DoF.h"
 
 class sixDOF_Tenssy3 {
 private:
 	FreeSixIMU_Tenssy3 _FsixDOF_Tenssy3; // FreeSixIMU object
-	Cyclic_array _c_array[3];
+	Cyc_array_6DoF _c_array[3];
 
 	float _average[3];
 	float _average_zero_offset[3];

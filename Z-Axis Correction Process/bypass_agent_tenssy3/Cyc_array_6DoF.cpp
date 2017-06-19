@@ -1,18 +1,24 @@
-#include "Cyclic_array.h"
+#include "Cyc_array_6DoF.h"
 
-float Cyclic_array::peek(){
+Cyc_array_6DoF::Cyc_array_6DoF(){
+	memset(_array, 0, sizeof(_array));
+	_front = 0;
+	_itemCount = 0;
+}
 
-	#ifdef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
-		Serial.println(F("Cyclic_array::peek"));
+float Cyc_array_6DoF::peek(){
+
+	#ifdef DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+		Serial.println(F("Cyc_array_6DoF::peek"));
 	#endif
 
 	return _array[_front];
 }
 
-void Cyclic_array::get_cyc_array(float* get_array){
+void Cyc_array_6DoF::get_cyc_array(float* get_array){
 
-	#ifdef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
-		Serial.println(F("Cyclic_array::get_cyc_array"));
+	#ifdef DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+		Serial.println(F("Cyc_array_6DoF::get_cyc_array"));
 	#endif
 
 	int index = _front;
@@ -29,10 +35,10 @@ void Cyclic_array::get_cyc_array(float* get_array){
 	}
 }
 
-float Cyclic_array::get_cyc_array_single(int i){
+float Cyc_array_6DoF::get_cyc_array_single(int i){
 
-	#ifdef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
-		Serial.println(F("Cyclic_array::get_cyc_array_single"));
+	#ifdef DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+		Serial.println(F("Cyc_array_6DoF::get_cyc_array_single"));
 	#endif
 
 	int index = _front - i;
@@ -43,28 +49,28 @@ float Cyclic_array::get_cyc_array_single(int i){
 	return _array[index];
 }
 
-bool Cyclic_array::isEmpty() {
+bool Cyc_array_6DoF::isEmpty() {
 	return _itemCount == 0;
 }
 
-bool Cyclic_array::isFull() {
+bool Cyc_array_6DoF::isFull() {
 	return _itemCount == CYC_ARRAY_SIZE - 1;
 }
 
-void Cyclic_array::insert(float data) {
+void Cyc_array_6DoF::insert(float data) {
 
-	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		Serial.println(F("Cyclic_array::insert"));
+	#ifdef DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+		Serial.println(F("Cyc_array_6DoF::insert"));
 	#endif
 
-	#ifdef DEBUG_CYCLIC_ARRAY
+	#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 		Serial.print(F("_front before increment"));
 		Serial.println(_front);
 	#endif
 
 	_front++;
 
-	#ifdef DEBUG_CYCLIC_ARRAY
+	#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 		Serial.print(F("_front after increment"));
 		Serial.println(_front);
 	#endif
@@ -74,31 +80,31 @@ void Cyclic_array::insert(float data) {
 	// regardless of the above, insert the data element
 	if(!isFull()) {
 
-		#ifdef DEBUG_CYCLIC_ARRAY
+		#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 			Serial.println(F("inside if(!isFull())"));
 		#endif
 
 		_itemCount++;
 
-		#ifdef DEBUG_CYCLIC_ARRAY
+		#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 			Serial.print(F("_itemCount is"));
 			Serial.println(_itemCount);
 		#endif
 
 	} else if (_front >= CYC_ARRAY_SIZE) {
 		
-		#ifdef DEBUG_CYCLIC_ARRAY
+		#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 			Serial.println(F("inside else if (_front >= CYC_ARRAY_SIZE)"));
 		#endif
 
 		_front = 0;
 	}
 
-	#ifdef DEBUG_CYCLIC_ARRAY
+	#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 		Serial.println(F("before _array[_front] = data"));
 	#endif
 
-	#ifdef DEBUG_CYCLIC_ARRAY
+	#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 		Serial.print(F("sizeof(_array) is :"));
 		Serial.println(sizeof(_array));
 	#endif

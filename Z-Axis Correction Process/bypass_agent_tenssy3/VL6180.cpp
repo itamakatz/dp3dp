@@ -62,7 +62,7 @@ void VL6180::VL6180_setup(float alpha)
 	_average = 0;
 	_alpha = alpha;
 
-	_c_array = Cyclic_array();
+	_c_array = Cyc_array_VL6180();
 
 	_init_samples();
 }

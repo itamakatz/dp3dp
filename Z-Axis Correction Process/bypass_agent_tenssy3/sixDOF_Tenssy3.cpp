@@ -19,7 +19,7 @@ void sixDOF_Tenssy3::sixDOF_setup(float alpha) {
 	_alpha = alpha;
 
 	for (int j = 0; j < 3; ++j) {
-		_c_array[j] = Cyclic_array();
+		_c_array[j] = Cyc_array_6DoF();
 	}
 
 	_FsixDOF_Tenssy3 = FreeSixIMU_Tenssy3();

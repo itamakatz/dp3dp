@@ -1,5 +1,5 @@
-#ifndef __CYCLIC_ARRAY__
-#define __CYCLIC_ARRAY__
+#ifndef __Cyc_array_VL6180__
+#define __Cyc_array_VL6180__
 
 #include <stdio.h>
 #include <string.h>
@@ -11,14 +11,14 @@
 	#include <i2c_t3.h> // needed to use serial while debugging
 #endif
 
-class Cyclic_array {
+class Cyc_array_VL6180 {
 private:
-	float _array[CYC_ARRAY_SIZE];
-	int _front = 0;
-	int _itemCount = 0;
+	float _array[CYC_ARRAY_SIZE_VL6180];
+	int _front;
+	int _itemCount;
 
 public:
-	Cyclic_array(){}
+	Cyc_array_VL6180();
 	float peek();
 	void get_cyc_array(float* get_array);
 	float get_cyc_array_single(int i);

@@ -19,8 +19,12 @@
 		#define DEBUG_FUNC_FLOW_VL6180__
 	#endif
 
-	#ifndef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
-		#define DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
+	#ifndef DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+		#define DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+	#endif
+
+	#ifndef DEBUG_FUNC_FLOW_Cyc_array_VL6180_
+		#define DEBUG_FUNC_FLOW_Cyc_array_VL6180_
 	#endif
 
 	#ifndef DEBUG_FUNC_FLOW_VL6180
@@ -31,6 +35,8 @@
 		#define DISABLE_NORMAL_PRINTS
 	#endif
 #endif
+
+// =========================== Bypass Agent =========================== //
 
 // #define DEBUG_FUNC_FLOW_BYPASS_AGENT_
 #ifdef DEBUG_FUNC_FLOW_BYPASS_AGENT_
@@ -46,6 +52,8 @@
 	#endif
 #endif
 
+// =========================== VL6180 =========================== //
+
 // #define DEBUG_FUNC_FLOW_VL6180
 #ifdef DEBUG_FUNC_FLOW_VL6180
 	#ifndef DISABLE_NORMAL_PRINTS
@@ -60,12 +68,16 @@
 	#endif
 #endif
 
+// =========================== 6DoF =========================== //
+
 // #define DEBUG_PRINT_sixDOF_Tenssy3
 #ifdef DEBUG_PRINT_sixDOF_Tenssy3
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
 #endif
+
+// =========================== Interupts =========================== //
 
 // #define DEBUG_INTERRUPTS
 #ifdef DEBUG_INTERRUPTS
@@ -74,16 +86,42 @@
 	#endif
 #endif
 
-// #define DEBUG_CYCLIC_ARRAY
-#ifdef DEBUG_CYCLIC_ARRAY
+// =========================== Cyclic array 6DoF =========================== //
+
+// #define DEBUG_PRINTS_Cyc_array_6DoF
+#ifdef DEBUG_PRINTS_Cyc_array_6DoF
 	
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
+#endif
 
-	#ifndef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		#define DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
+// #define DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+#ifdef DEBUG_FUNC_FLOW_Cyc_array_6DoF_
+	
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
 	#endif
 #endif
+
+// =========================== Cyclic array VL6180 =========================== //
+
+// #define DEBUG_PRINTS_Cyc_array_VL6180
+#ifdef DEBUG_PRINTS_Cyc_array_VL6180
+	
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// #define DEBUG_FUNC_FLOW_Cyc_array_VL6180_
+#ifdef DEBUG_FUNC_FLOW_Cyc_array_VL6180_
+	
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// =========================== Done =========================== //
 
 #endif

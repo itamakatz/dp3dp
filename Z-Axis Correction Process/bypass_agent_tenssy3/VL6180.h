@@ -4,12 +4,12 @@
 #include <i2c_t3.h>
 #include "VL6180X_Tenssy3.h"
 #include "general_defs.h"
-#include "Cyclic_array.h"
+#include "Cyc_array_VL6180.h"
 
 class VL6180 {
 private:
 	VL6180X_Tenssy3 _VL6180_sensor;
-	Cyclic_array _c_array;
+	Cyc_array_VL6180 _c_array;
 
 	float _average = 0;
 	float _alpha = 0;
