@@ -1,18 +1,9 @@
 #include "Cyclic_array.h"
 
-Cyclic_array::Cyclic_array(int array_size){
-	_array = (float*) calloc(array_size ,sizeof(float));
-}
-
-Cyclic_array::~Cyclic_array(){
-	free(_array);
-}
-
-
 float Cyclic_array::peek(){
 
-	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		Serial.println("Cyclic_array::peek");
+	#ifdef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
+		Serial.println(F("Cyclic_array::peek"));
 	#endif
 
 	return _array[_front];
@@ -20,8 +11,8 @@ float Cyclic_array::peek(){
 
 void Cyclic_array::get_cyc_array(float* get_array){
 
-	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		Serial.println("Cyclic_array::get_cyc_array");
+	#ifdef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
+		Serial.println(F("Cyclic_array::get_cyc_array"));
 	#endif
 
 	int index = _front;
@@ -36,15 +27,12 @@ void Cyclic_array::get_cyc_array(float* get_array){
 			index += CYC_ARRAY_SIZE;
 		}
 	}
-
-	for (int j = 0; j < 3; ++j) {
-	}
 }
 
 float Cyclic_array::get_cyc_array_single(int i){
 
-	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		Serial.println("Cyclic_array::get_cyc_array_single");
+	#ifdef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
+		Serial.println(F("Cyclic_array::get_cyc_array_single"));
 	#endif
 
 	int index = _front - i;
@@ -63,25 +51,21 @@ bool Cyclic_array::isFull() {
 	return _itemCount == CYC_ARRAY_SIZE - 1;
 }
 
-int Cyclic_array::size() {
-	return _itemCount;
-}
-
 void Cyclic_array::insert(float data) {
 
 	#ifdef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		Serial.println("Cyclic_array::insert");
+		Serial.println(F("Cyclic_array::insert"));
 	#endif
 
 	#ifdef DEBUG_CYCLIC_ARRAY
-		Serial.print("_front before increment");
+		Serial.print(F("_front before increment"));
 		Serial.println(_front);
 	#endif
 
 	_front++;
 
 	#ifdef DEBUG_CYCLIC_ARRAY
-		Serial.print("_front after increment");
+		Serial.print(F("_front after increment"));
 		Serial.println(_front);
 	#endif
 
@@ -91,31 +75,31 @@ void Cyclic_array::insert(float data) {
 	if(!isFull()) {
 
 		#ifdef DEBUG_CYCLIC_ARRAY
-			Serial.println("inside if(!isFull())");
+			Serial.println(F("inside if(!isFull())"));
 		#endif
 
 		_itemCount++;
 
 		#ifdef DEBUG_CYCLIC_ARRAY
-			Serial.print("_itemCount is");
+			Serial.print(F("_itemCount is"));
 			Serial.println(_itemCount);
 		#endif
 
 	} else if (_front >= CYC_ARRAY_SIZE) {
 		
 		#ifdef DEBUG_CYCLIC_ARRAY
-			Serial.println("inside else if (_front >= CYC_ARRAY_SIZE)");
+			Serial.println(F("inside else if (_front >= CYC_ARRAY_SIZE)"));
 		#endif
 
 		_front = 0;
 	}
 
 	#ifdef DEBUG_CYCLIC_ARRAY
-		Serial.println("before _array[_front] = data");
+		Serial.println(F("before _array[_front] = data"));
 	#endif
 
 	#ifdef DEBUG_CYCLIC_ARRAY
-		Serial.print("sizeof(_array) is :");
+		Serial.print(F("sizeof(_array) is :"));
 		Serial.println(sizeof(_array));
 	#endif
 

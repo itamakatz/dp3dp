@@ -7,20 +7,20 @@
 
 #ifdef DEBUG_FUNC_FLOW_ALL
 
-	#ifndef DEBUG_FUNC_FLOW__BYPASS_AGENT__
-		#define DEBUG_FUNC_FLOW__BYPASS_AGENT__
+	#ifndef DEBUG_FUNC_FLOW_BYPASS_AGENT_
+		#define DEBUG_FUNC_FLOW_BYPASS_AGENT_
 	#endif
 
-	#ifndef DEBUG_FUNC_FLOW__SIX_DFO__
-		#define DEBUG_FUNC_FLOW__SIX_DFO__
+	#ifndef DEBUG_FUNC_FLOW_SIX_DFO_
+		#define DEBUG_FUNC_FLOW_SIX_DFO_
 	#endif
 
-	#ifndef DEBUG_FUNC_FLOW__VL6180__
-		#define DEBUG_FUNC_FLOW__VL6180__
+	#ifndef DEBUG_FUNC_FLOW_VL6180__
+		#define DEBUG_FUNC_FLOW_VL6180__
 	#endif
 
-	#ifndef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-		#define DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
+	#ifndef DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
+		#define DEBUG_FUNC_FLOW_CYCLIC_ARRAY_
 	#endif
 
 	#ifndef DEBUG_FUNC_FLOW_VL6180
@@ -32,15 +32,15 @@
 	#endif
 #endif
 
-// #define DEBUG_FUNC_FLOW__BYPASS_AGENT__
-#ifdef DEBUG_FUNC_FLOW__BYPASS_AGENT__
+// #define DEBUG_FUNC_FLOW_BYPASS_AGENT_
+#ifdef DEBUG_FUNC_FLOW_BYPASS_AGENT_
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
 #endif
 
-// #define DEBUG_MILIS__BYPASS_AGENT__
-#ifdef DEBUG_MILIS__BYPASS_AGENT__
+// #define DEBUG_MILIS_BYPASS_AGENT_
+#ifdef DEBUG_MILIS_BYPASS_AGENT_
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
@@ -60,7 +60,6 @@
 	#endif
 #endif
 
-
 // #define DEBUG_PRINT_sixDOF_Tenssy3
 #ifdef DEBUG_PRINT_sixDOF_Tenssy3
 	#ifndef DISABLE_NORMAL_PRINTS
@@ -68,7 +67,14 @@
 	#endif
 #endif
 
-#define DEBUG_CYCLIC_ARRAY
+// #define DEBUG_INTERRUPTS
+#ifdef DEBUG_INTERRUPTS
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// #define DEBUG_CYCLIC_ARRAY
 #ifdef DEBUG_CYCLIC_ARRAY
 	
 	#ifndef DISABLE_NORMAL_PRINTS
@@ -77,13 +83,6 @@
 
 	#ifndef DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
 		#define DEBUG_FUNC_FLOW__CYCLIC_ARRAY__
-	#endif
-#endif
-
-// #define DEBUG_INTERRUPTS
-#ifdef DEBUG_INTERRUPTS
-	#ifndef DISABLE_NORMAL_PRINTS
-		#define DISABLE_NORMAL_PRINTS
 	#endif
 #endif
 

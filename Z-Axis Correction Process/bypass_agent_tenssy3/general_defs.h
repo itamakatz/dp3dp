@@ -27,6 +27,7 @@
 // Blincking led timing
 #define METRO_HIGH_INTERVAL 250
 #define METRO_LOW_INTERVAL 1000
+#define METRO_PRINT_INTERVAL 1000
 
 #define sixDOF_ALPHA (float)0.1
 #define VL6180_ALPHA (float)0.1

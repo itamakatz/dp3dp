@@ -1,6 +1,11 @@
 #include "sixDOF_Tenssy3.h"
 
-sixDOF_Tenssy3::sixDOF_Tenssy3(float alpha){
+void sixDOF_Tenssy3::sixDOF_setup(float alpha) {
+
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::sixDOF_setup"));
+	#endif
+
 	delay(sixDOF_CRITICAL_DELAY);
 
 	memset(_average, 0, sizeof(_average));
@@ -13,31 +18,23 @@ sixDOF_Tenssy3::sixDOF_Tenssy3(float alpha){
 
 	_alpha = alpha;
 
-	// for (int j = 0; j < 3; ++j) {
-	// 	// _c_array[j] = Cyclic_array(CYC_ARRAY_SIZE_6DoF);
-	// }
-}
+	for (int j = 0; j < 3; ++j) {
+		_c_array[j] = Cyclic_array();
+	}
 
-
-void sixDOF_Tenssy3::sixDOF_setup() {
-
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_setup");
-	#endif
-
-	FsixDOF_Tenssy3 = FreeSixIMU_Tenssy3();
-	FsixDOF_Tenssy3.init();
+	_FsixDOF_Tenssy3 = FreeSixIMU_Tenssy3();
+	_FsixDOF_Tenssy3.init();
 	_init_samples();
 }
 
 void sixDOF_Tenssy3::_init_samples(){
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::_init_samples");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::_init_samples"));
 	#endif
 
 	for (double i = 0.0; i < CYC_ARRAY_SIZE_6DoF; ++i) {
-		FsixDOF_Tenssy3.getEuler(_angles_Euler);
+		_FsixDOF_Tenssy3.getEuler(_angles_Euler);
 		for (int j = 0; j < 3; ++j){
 			_c_array[j].insert(_angles_Euler[j]);
 		}
@@ -50,28 +47,28 @@ void sixDOF_Tenssy3::_init_samples(){
 
 void sixDOF_Tenssy3::sixDOF_loop() { 
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_loop");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::sixDOF_loop"));
 	#endif
 
-	FsixDOF_Tenssy3.getEuler(_angles_Euler);
+	_FsixDOF_Tenssy3.getEuler(_angles_Euler);
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_loop - after getEuler");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::sixDOF_loop - after getEuler"));
 	#endif
 
 	for (int j = 0; j < 3; ++j){
 		_c_array[j].insert(_angles_Euler[j]);
 	}
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_loop - after insert");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::sixDOF_loop - after insert"));
 	#endif
 
 	_update_average();
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::sixDOF_loop - after _update_average");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::sixDOF_loop - after _update_average"));
 	#endif
 }
 
@@ -84,8 +81,8 @@ void sixDOF_Tenssy3::set_zero(){
 
 void sixDOF_Tenssy3::_update_average(){
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::_update_average");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::_update_average"));
 	#endif
 
 	// since the exponential window is recursive, set the first average value as an initial condition
@@ -103,11 +100,11 @@ void sixDOF_Tenssy3::_update_average(){
 
 void sixDOF_Tenssy3::get_angles(float* angles_Euler) { 
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::get_angles");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::get_angles"));
 	#endif
 
-	// FsixDOF_Tenssy3.getQ(q);
+	// _FsixDOF_Tenssy3.getQ(q);
 	// serialPrintFloatArr(q, 4);
 
 	for (int j = 0; j < 3; ++j) {
@@ -116,18 +113,18 @@ void sixDOF_Tenssy3::get_angles(float* angles_Euler) {
 
 	#ifdef DEBUG_PRINT_sixDOF_Tenssy3
 
-		Serial.print("sixDOF_Tenssy3 - _angles_Euler: ");
+		Serial.print(F("sixDOF_Tenssy3 - _angles_Euler: "));
 		for (int j = 0; j < 3; ++j){
 			Serial.print(_angles_Euler[j]);	
-			Serial.print(", ");
+			Serial.print(F(", "));
 		}
 
 		Serial.println();
 
-		Serial.print("sixDOF_Tenssy3 - angles_Euler: ");
+		Serial.print(F("sixDOF_Tenssy3 - angles_Euler: "));
 		for (int j = 0; j < 3; ++j){
 			Serial.print(angles_Euler[j]);	
-			Serial.print(", ");
+			Serial.print(F(", "));
 		}
 
 		Serial.println();
@@ -137,8 +134,8 @@ void sixDOF_Tenssy3::get_angles(float* angles_Euler) {
 
 void sixDOF_Tenssy3::get_average(float* angles_average){
 	
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::get_average");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::get_average"));
 	#endif
 
 	for (int j = 0; j < 3; ++j) {
@@ -147,18 +144,18 @@ void sixDOF_Tenssy3::get_average(float* angles_average){
 
 	#ifdef DEBUG_PRINT_sixDOF_Tenssy3
 
-		Serial.print("sixDOF_Tenssy3 - _average: ");
+		Serial.print(F("sixDOF_Tenssy3 - _average: "));
 		for (int j = 0; j < 3; ++j){
 			Serial.print(_average[j]);	
-			Serial.print(", ");
+			Serial.print(F(", "));
 		}
 
 		Serial.println();
 
-		Serial.print("sixDOF_Tenssy3 - angles_average: ");
+		Serial.print(F("sixDOF_Tenssy3 - angles_average: "));
 		for (int j = 0; j < 3; ++j){
 			Serial.print(angles_average[j]);	
-			Serial.print(", ");
+			Serial.print(F(", "));
 		}
 
 		Serial.println();
@@ -168,11 +165,11 @@ void sixDOF_Tenssy3::get_average(float* angles_average){
 
 void sixDOF_Tenssy3::calibrate(){
 
-	#ifdef DEBUG_FUNC_FLOW__SIX_DFO__
-		Serial.println("sixDOF_Tenssy3::calibrate");
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("sixDOF_Tenssy3::calibrate"));
 	#endif
 
-	FsixDOF_Tenssy3.gyro.zeroCalibrate(128,5);
+	_FsixDOF_Tenssy3.gyro.zeroCalibrate(128,5);
 	for (int j = 0; j < 3; ++j)
 	{
 		_average[j] = 0.0;
