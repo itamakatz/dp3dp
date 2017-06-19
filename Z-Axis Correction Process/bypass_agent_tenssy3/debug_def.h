@@ -79,7 +79,7 @@
 
 // =========================== Interupts =========================== //
 
-// #define DEBUG_INTERRUPTS
+#define DEBUG_INTERRUPTS
 #ifdef DEBUG_INTERRUPTS
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
@@ -124,11 +124,28 @@
 
 // =========================== stepper =========================== //
 
+// #define DEBUG_PRINTS_STEPPER
+#ifdef DEBUG_PRINTS_STEPPER
+	
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
 // #define DEBUG_FUNC_FLOW_STEPPER
 #ifdef DEBUG_FUNC_FLOW_STEPPER
 	
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// =========================== Normal Prints =========================== //
+
+// #define ENABLE_NORMAL_PRINTS
+#ifdef ENABLE_NORMAL_PRINTS
+	#ifdef DISABLE_NORMAL_PRINTS
+		#undef DISABLE_NORMAL_PRINTS
 	#endif
 #endif
 

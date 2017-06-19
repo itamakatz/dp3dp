@@ -1,6 +1,8 @@
 #include "intermediator.h"
 #include "general_defs.h"
 
+volatile bool enable_state;
+
 void intermediator_setup(){
 
 	cli();
@@ -20,13 +22,16 @@ void intermediator_setup(){
 	digitalWriteFast(PASS_ENABLE, digitalReadFast(RECIEVE_ENABLE));
 	digitalWriteFast(PASS_DIR, digitalReadFast(RECIEVE_DIR));
 
+	enable_state = digitalReadFast(RECIEVE_ENABLE);
+
 	sei();
 
 	// delay(INTERMEDIATOR_DELAY);
 }
 
 void enable_received() {
-	digitalWriteFast(PASS_ENABLE, digitalReadFast(RECIEVE_ENABLE));
+	enable_state = digitalReadFast(RECIEVE_ENABLE);
+	digitalWriteFast(PASS_ENABLE, enable_state);
 
 	#ifdef DEBUG_INTERRUPTS
 		Serial.println(F("enable_received"));

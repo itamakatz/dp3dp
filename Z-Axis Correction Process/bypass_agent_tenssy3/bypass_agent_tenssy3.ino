@@ -8,13 +8,14 @@
 #include "general_defs.h"
 #include <Metro.h>
 
+extern volatile bool enable_state;
+
 #ifndef DISABLE_NORMAL_PRINTS
-	Metro print_metro = Metro(METRO_PRINT_INTERVAL);
+	Metro print_metro = Metro(METRO_BIG_NUM);
 #endif
 
-Metro stepper_metro = Metro(METRO_STEPPER_INTERVAL);
-
-Metro led_metro = Metro(METRO_HIGH_INTERVAL);
+Metro stepper_metro = Metro(METRO_BIG_NUM);
+Metro led_metro = Metro(METRO_BIG_NUM);
 bool led_state = HIGH;
 
 float distance = 0;
@@ -24,6 +25,7 @@ s6DoF_Tenssy3 s6DoF_object = s6DoF_Tenssy3();
 VL6180 VL6180_object = VL6180();
 
 float z_correction;
+float current_position;
 
 void setup(){
 
@@ -49,6 +51,13 @@ void setup(){
 		Serial.println(F("setup: after objects init"));
 	#endif
 
+	#ifndef DISABLE_NORMAL_PRINTS
+		print_metro = Metro(METRO_PRINT_INTERVAL);
+	#endif
+
+	stepper_metro = Metro(METRO_STEPPER_INTERVAL);
+	led_metro = Metro(METRO_HIGH_INTERVAL);
+	
 	#ifdef DEBUG_MILIS_BYPASS_AGENT_
 		Serial.print(millis());
 		Serial.println(F(" - end of setup"));
@@ -92,6 +101,8 @@ void loop(){
 
 void feedback_z(){
 	z_correction = distance/tan(angles_Euler_average[1]);
+	stepper_move(current_position - z_correction);
+	current_position = z_correction;
 }
 
 void check_metro(){
@@ -123,8 +134,9 @@ void check_metro(){
 				Serial.println(F("check_metro() - print_metro"));
 			#endif
 			
-			print_metro.interval(METRO_PRINT_INTERVAL); // if the pin is LOW, set the interval to 0.25 seconds.
+			print_metro.interval(METRO_PRINT_INTERVAL);
 			print_results();
+		
 			#ifdef DEBUG_FUNC_FLOW_BYPASS_AGENT_
 				Serial.println(F("loop: after print_results()"));
 			#endif
@@ -132,8 +144,15 @@ void check_metro(){
 	#endif
 
 	if (stepper_metro.check()) {
-		stepper_loop();
-		stepper_metro.interval(METRO_STEPPER_INTERVAL); // if the pin is LOW, set the interval to 0.25 seconds.
+		#ifdef DEBUG_FUNC_FLOW_BYPASS_AGENT_
+			Serial.println(F("check_metro() - print_metro"));
+		#endif
+
+		if (enable_state == DISABLED) {
+			stepper_loop();
+		}
+
+		stepper_metro.interval(METRO_STEPPER_INTERVAL);
 	}
 }
 

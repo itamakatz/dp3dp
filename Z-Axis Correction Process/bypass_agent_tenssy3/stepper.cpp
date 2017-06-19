@@ -1,13 +1,57 @@
 #include "stepper.h"
 
-DRV8825_teensy z_stepper(125, PASS_DIR, PASS_STEP, PASS_ENABLE);
+DRV8825_teensy z_stepper(2000, PASS_DIR, PASS_STEP, PASS_ENABLE);
+Cyc_array_stepper c_array = Cyc_array_stepper();
+int step_count = 0;
+float average = 0;
+float alpha = STEPPER_ALPHA;
+
 
 void stepper_setup(){
 	#ifdef DEBUG_FUNC_FLOW_STEPPER
 		Serial.println(F("stepper - stepper_setup"));
 	#endif
 	
-	z_stepper.setMicrostep(16);
+	z_stepper.setMicrostep(1);
+	z_stepper.setRPM(120);
+
+}
+
+void stepper_move(float num){
+
+	#ifdef DEBUG_FUNC_FLOW_STEPPER
+		Serial.println(F("stepper - stepper_move"));
+	#endif
+
+	step_count += num * SETEPS_TO_MM;
+
+	step_count /= 2;
+
+	c_array.insert(step_count);
+
+	if(c_array.isFull()){
+		update_average();
+	}
+
+	#ifdef DEBUG_PRINTS_STEPPER
+		Serial.print(F("stepper - step_count is :"));
+		Serial.println(step_count);
+	#endif
+}
+
+void update_average(){
+
+	#ifdef DEBUG_FUNC_FLOW_SIX_DFO_
+		Serial.println(F("stepper - update_average"));
+	#endif
+
+	// since the exponential window is recursive, set the first average value as an initial condition
+	average = c_array.get_cyc_array_single(0);
+
+	// note i = 1 due to the above
+	for (int i = 1; i < CYC_ARRAY_SIZE_6DoF; ++i){
+		average = alpha * average + (1 - alpha) * c_array.get_cyc_array_single(i);
+	}
 }
 
 void stepper_loop(){
@@ -15,22 +59,21 @@ void stepper_loop(){
 	#ifdef DEBUG_FUNC_FLOW_STEPPER
 		Serial.println(F("stepper - stepper_loop"));
 	#endif
-		
-	z_stepper.rotate(180);
-	// delay(1000);
-	// z_stepper.rotate(-317);
-	// delay(1000);
-	// z_stepper.move(360);
 
-
-	// for (int i = 1; i < 200; ++i)
-	// {
-	// 	z_stepper.setRPM(i);
-	// 	Serial.print("setRPM to ");
-	// 	Serial.println(i);
-	// 	Serial.print("step_pulse = ");
-	// 	Serial.println(z_stepper.get_step_pulse());
-	// 	z_stepper.rotate(40);
-	// 	delay(300);
-	// }
+	if(c_array.isFull()){
+		digitalWriteFast(PASS_ENABLE, LOW);		
+		if (abs(step_count) >= STEPS_PER_LOOP){
+			if (step_count >= 0) {
+				z_stepper.move(STEPS_PER_LOOP);
+				step_count -= STEPS_PER_LOOP;
+			} else{
+				z_stepper.move(-1*STEPS_PER_LOOP);
+				step_count += STEPS_PER_LOOP;	
+			}
+		} else {
+			z_stepper.move(step_count);
+			step_count = 0;
+		}
+		digitalWriteFast(PASS_ENABLE, HIGH);
+	}
 }
