@@ -61,10 +61,13 @@ def refine(path):
         theta_delta = float(next_theta_position - g_current_theta) / REFINE_LEVEL
 
         for i in range(REFINE_LEVEL):
-            g_refined_commands.append("G1 X{R} Y{theta} ".format(
-                R = g_current_R, theta = g_current_theta*g_current_R) + " ".join(untouched_args))
+            command = "G1 X{R} Y{theta} ".format(
+                R = g_current_R, theta = g_current_theta*g_current_R) + " ".join(untouched_args)
             g_current_R += R_delta
             g_current_theta += theta_delta
+            if g_current_theta < 0:
+                continue
+            g_refined_commands.append(command)
 
     res.write("\n".join(g_refined_commands))
     res.close()

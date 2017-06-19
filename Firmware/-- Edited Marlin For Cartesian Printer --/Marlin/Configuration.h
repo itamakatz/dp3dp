@@ -513,7 +513,7 @@
  *		(with a 80 teeth big gear it would be 2000)
 */
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 160.00, 92.00, 2000.00, 372.00}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 160.00, 48.00, 2000.00, 372.00}
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203

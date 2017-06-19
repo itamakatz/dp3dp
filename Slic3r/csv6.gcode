@@ -10,7 +10,6 @@
 M107
 M190 S77 ; set bed temperature
 M104 S280 ; set temperature
-G28 ; home all axes
 G1 Z5 F5000 ; lift nozzle
 
 M109 S280 ; wait for temperature to be reached
@@ -89029,7 +89028,7 @@ G1 X25.695 Y24.132 E377.29702
 G1 E375.29702 F2400.00000
 G92 E0
 M104 S0 ; turn off temperature
-G28 X0  ; home X axis
+;G28 X0  ; home X axis
 M84     ; disable motors
 
 ; filament used = 13736.4mm (34.0cm3)
