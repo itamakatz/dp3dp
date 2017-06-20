@@ -23,14 +23,14 @@ void Cyc_array_6DoF::get_cyc_array(float* get_array){
 
 	int index = _front;
 
-	for (int i = 0; i < CYC_ARRAY_SIZE; ++i)
+	for (int i = 0; i < CYC_ARRAY_SIZE_6DoF; ++i)
 	{
 		get_array[i] = _array[index];
 		
 		index--;
 
 		if (index < 0) {
-			index += CYC_ARRAY_SIZE;
+			index += CYC_ARRAY_SIZE_6DoF;
 		}
 	}
 }
@@ -44,7 +44,7 @@ float Cyc_array_6DoF::get_cyc_array_single(int i){
 	int index = _front - i;
 
 	if (index < 0) {
-		index += CYC_ARRAY_SIZE;
+		index += CYC_ARRAY_SIZE_6DoF;
 	}
 	return _array[index];
 }
@@ -54,7 +54,7 @@ bool Cyc_array_6DoF::isEmpty() {
 }
 
 bool Cyc_array_6DoF::isFull() {
-	return _itemCount == CYC_ARRAY_SIZE - 1;
+	return _itemCount == CYC_ARRAY_SIZE_6DoF - 1;
 }
 
 void Cyc_array_6DoF::insert(float data) {
@@ -76,7 +76,7 @@ void Cyc_array_6DoF::insert(float data) {
 	#endif
 
 	// if not full increase count.
-	// if _front >= CYC_ARRAY_SIZE due to cyclicity, start from 0
+	// if _front >= CYC_ARRAY_SIZE_6DoF due to cyclicity, start from 0
 	// regardless of the above, insert the data element
 	if(!isFull()) {
 
@@ -91,10 +91,10 @@ void Cyc_array_6DoF::insert(float data) {
 			Serial.println(_itemCount);
 		#endif
 
-	} else if (_front >= CYC_ARRAY_SIZE) {
+	} else if (_front >= CYC_ARRAY_SIZE_6DoF) {
 		
 		#ifdef DEBUG_PRINTS_Cyc_array_6DoF
-			Serial.println(F("inside else if (_front >= CYC_ARRAY_SIZE)"));
+			Serial.println(F("inside else if (_front >= CYC_ARRAY_SIZE_6DoF)"));
 		#endif
 
 		_front = 0;
