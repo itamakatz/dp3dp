@@ -6,19 +6,19 @@
 
 // =========================== z-correction parameters =========================== //
 
-#define CYC_ARRAY_SIZE_6DoF 10
+#define CYC_ARRAY_SIZE_6DoF 50
 #define CYC_ARRAY_SIZE_VL6180 200
 #define CYC_ARRAY_SIZE_STEPPER 50
 
-#define sixDOF_ALPHA (float)0.1
+#define sixDOF_ALPHA (float)0.01
 #define VL6180_ALPHA (float)0.001
 #define STEPPER_ALPHA (float)0.01
 
 #define SETEPS_PER_REVOLUTION 3300
-#define STEPS_PER_LOOP 500
+#define STEPS_PER_LOOP 10
 #define SETEPS_TO_MM 50
 
-#define METRO_STEPPER_INTERVAL 500
+#define METRO_STEPPER_INTERVAL 100
 
 // ================================================================================= //
 

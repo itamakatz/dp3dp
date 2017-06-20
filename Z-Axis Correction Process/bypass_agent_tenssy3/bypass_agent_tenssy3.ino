@@ -65,7 +65,7 @@ void setup(){
 	delay(DISTANCE_CONVERSION_TIME);
 	distance = VL6180_object.get_average();
 	// current_position = distance;
-	
+
 	#ifdef DEBUG_MILIS_BYPASS_AGENT_
 		Serial.print(millis());
 		Serial.println(F(" - end of setup"));
@@ -108,10 +108,10 @@ void loop(){
 }
 
 void feedback_z(){
-	r_distance = (float)r_num_of_steps / R_AXIS_STEPS_PER_MM;
+	r_distance = -1 * (float)r_num_of_steps / R_AXIS_STEPS_PER_MM;
 	// r_distance = (float)r_num_of_steps;
-	z_correction = r_distance;
-	// z_correction = (r_distance + DISTANCE_CONVERSION_TIME)/tan(angles_Euler_average[1]);
+	// z_correction = r_distance;
+	z_correction = (r_distance + DISTANCE_CONVERSION_TIME)/tan(angles_Euler_average[1]);
 	// z_correction = distance/tan(angles_Euler_average[1]);
 	stepper_add(current_position - z_correction);
 	current_position = z_correction;
