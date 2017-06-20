@@ -221,5 +221,5 @@ def check():
 
 if __name__ == "__main__":
     # check()
-    parse("csv6.gcode")
+    parse("v1 - hilberts curve.gcode")
     # parse(relpath(sys.argv[1]))
