@@ -1,6 +1,6 @@
 #include "stepper.h"
 
-DRV8825_teensy z_stepper(2000, PASS_DIR, PASS_STEP, PASS_ENABLE);
+DRV8825_teensy z_stepper(2000, PASS_DIR_Z, PASS_STEP_Z, PASS_ENABLE_Z);
 Cyc_array_stepper c_array = Cyc_array_stepper();
 int step_count = 0;
 float average = 0;
@@ -17,10 +17,10 @@ void stepper_setup(){
 
 }
 
-void stepper_move(float num){
+void stepper_add(float num){
 
 	#ifdef DEBUG_FUNC_FLOW_STEPPER
-		Serial.println(F("stepper - stepper_move"));
+		Serial.println(F("stepper - stepper_add"));
 	#endif
 
 	step_count += num * SETEPS_TO_MM;
@@ -61,7 +61,7 @@ void stepper_loop(){
 	#endif
 
 	if(c_array.isFull()){
-		digitalWriteFast(PASS_ENABLE, LOW);		
+		digitalWriteFast(PASS_ENABLE_Z, LOW);		
 		if (abs(step_count) >= STEPS_PER_LOOP){
 			if (step_count >= 0) {
 				z_stepper.move(STEPS_PER_LOOP);
@@ -74,6 +74,6 @@ void stepper_loop(){
 			z_stepper.move(step_count);
 			step_count = 0;
 		}
-		digitalWriteFast(PASS_ENABLE, HIGH);
+		digitalWriteFast(PASS_ENABLE_Z, HIGH);
 	}
 }

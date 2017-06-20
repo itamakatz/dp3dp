@@ -13,7 +13,7 @@
 // => [us/(step* micro-steps)]
 
 void stepper_setup();
-void stepper_move(float num);
+void stepper_add(float num);
 void stepper_loop();
 void update_average();
 

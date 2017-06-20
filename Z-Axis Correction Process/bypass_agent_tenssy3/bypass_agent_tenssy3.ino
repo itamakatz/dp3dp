@@ -1,7 +1,8 @@
 #include "VL6180.h"
 // #include "MCP3202.h"
 #include "s6DoF_Tenssy3.h"
-#include "intermediator.h"
+#include "z_axis_interrupt.h"
+#include "r_axis_interrupt.h"
 #include "stepper.h"
 
 #include <i2c_t3.h>
@@ -14,18 +15,20 @@ extern volatile bool enable_state;
 	Metro print_metro = Metro(METRO_BIG_NUM);
 #endif
 
-Metro stepper_metro = Metro(METRO_BIG_NUM);
+Metro stepper_metro_z = Metro(METRO_BIG_NUM);
 Metro led_metro = Metro(METRO_BIG_NUM);
 bool led_state = HIGH;
 
 float distance = 0;
+float r_distance = 0;
+
 float angles_Euler[3] = {0};
 float angles_Euler_average[3] = {0};
 s6DoF_Tenssy3 s6DoF_object = s6DoF_Tenssy3();
 VL6180 VL6180_object = VL6180();
 
 float z_correction;
-float current_position;
+float current_position = 0;
 
 void setup(){
 
@@ -40,11 +43,12 @@ void setup(){
 		Serial.println(F("setup: after Wire.begin()"));
 	#endif
 
-	intermediator_setup();
+	intermediator_setup_z();
+	intermediator_setup_r();
 	s6DoF_object.sixDOF_setup(sixDOF_ALPHA);
 	VL6180_object.VL6180_setup(VL6180_ALPHA);
 	pinMode(LED_PIN, OUTPUT);
-	digitalWriteFast(LED_PIN, led_state);
+	digitalWriteFast(LED_PIN, HIGH);
 	stepper_setup();
 
 	#ifdef DEBUG_FUNC_FLOW_BYPASS_AGENT_
@@ -55,8 +59,12 @@ void setup(){
 		print_metro = Metro(METRO_PRINT_INTERVAL);
 	#endif
 
-	stepper_metro = Metro(METRO_STEPPER_INTERVAL);
+	stepper_metro_z = Metro(METRO_STEPPER_INTERVAL);
 	led_metro = Metro(METRO_HIGH_INTERVAL);
+	
+	delay(DISTANCE_CONVERSION_TIME);
+	distance = VL6180_object.get_average();
+	// current_position = distance;
 	
 	#ifdef DEBUG_MILIS_BYPASS_AGENT_
 		Serial.print(millis());
@@ -73,7 +81,7 @@ void loop(){
 	check_metro();
 
 	VL6180_object.VL6180_loop();
-	distance = VL6180_object.get_average();
+	// distance = VL6180_object.get_average();
 
 	s6DoF_object.sixDOF_loop();
 	s6DoF_object.get_angles(&angles_Euler[0]);
@@ -100,8 +108,12 @@ void loop(){
 }
 
 void feedback_z(){
-	z_correction = distance/tan(angles_Euler_average[1]);
-	stepper_move(current_position - z_correction);
+	r_distance = (float)r_num_of_steps / R_AXIS_STEPS_PER_MM;
+	// r_distance = (float)r_num_of_steps;
+	z_correction = r_distance;
+	// z_correction = (r_distance + DISTANCE_CONVERSION_TIME)/tan(angles_Euler_average[1]);
+	// z_correction = distance/tan(angles_Euler_average[1]);
+	stepper_add(current_position - z_correction);
 	current_position = z_correction;
 }
 
@@ -143,7 +155,7 @@ void check_metro(){
 		}
 	#endif
 
-	if (stepper_metro.check()) {
+	if (stepper_metro_z.check()) {
 		#ifdef DEBUG_FUNC_FLOW_BYPASS_AGENT_
 			Serial.println(F("check_metro() - print_metro"));
 		#endif
@@ -152,7 +164,7 @@ void check_metro(){
 			stepper_loop();
 		}
 
-		stepper_metro.interval(METRO_STEPPER_INTERVAL);
+		stepper_metro_z.interval(METRO_STEPPER_INTERVAL);
 	}
 }
 

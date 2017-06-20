@@ -79,8 +79,15 @@
 
 // =========================== Interupts =========================== //
 
-#define DEBUG_INTERRUPTS
-#ifdef DEBUG_INTERRUPTS
+// #define DEBUG_INTERRUPTS_R
+#ifdef DEBUG_INTERRUPTS_R
+	#ifndef DISABLE_NORMAL_PRINTS
+		#define DISABLE_NORMAL_PRINTS
+	#endif
+#endif
+
+// #define DEBUG_INTERRUPTS_Z
+#ifdef DEBUG_INTERRUPTS_Z
 	#ifndef DISABLE_NORMAL_PRINTS
 		#define DISABLE_NORMAL_PRINTS
 	#endif
