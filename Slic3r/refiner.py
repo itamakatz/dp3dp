@@ -76,4 +76,4 @@ def refine(path):
 
 
 if __name__ == "__main__":
-    refine("v1 - hilberts curve_updated.gcode")
+    refine("v4_updated_no_endstops.gcode")

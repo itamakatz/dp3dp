@@ -503,7 +503,7 @@
  * 		Big gear: Num of teeth: 128. Diameter: 4in. Pitch: 32P
  * 		Small gear: Num of teeth: 16. Diameter: 0.5in. Pitch: 32P
  * 		Microstepping: 1/16
- * 		Motor steps per revolution: 200
+ * 		Motor steps per revolution: 20
  * 		Motor steps angle: 1.8 deg (360/steps_per_revolution)
  * 		
  * 		==> number of steps/mm = steps_per_revolution / leadscrew_pintch / Microstepping * (big/small gear ratio)

@@ -188,7 +188,7 @@ def G0_G1_gcode():
 def parse(path):
 
     global g_command_args
-    res = open("{}_updated.gcode".format(os.path.splitext(path)[0]), "w")
+    res = open("{}_updated_no_endstops.gcode".format(os.path.splitext(path)[0]), "w")
 
     for gcode in open(path, "r").readlines():
         # if its not a command, pass
@@ -202,7 +202,6 @@ def parse(path):
                 break
             if case("G28"):
                 # make a new endstop
-                g_updated_commands.append("G1 X3 Y0")
                 break
             # default, the code is intact
             g_updated_commands.append(join(g_command_args))
@@ -221,5 +220,5 @@ def check():
 
 if __name__ == "__main__":
     # check()
-    parse("v1 - hilberts curve.gcode")
+    parse("v4.gcode")
     # parse(relpath(sys.argv[1]))
