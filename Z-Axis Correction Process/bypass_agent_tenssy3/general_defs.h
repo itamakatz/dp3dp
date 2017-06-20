@@ -18,7 +18,7 @@
 #define STEPS_PER_LOOP 500
 #define SETEPS_TO_MM 50
 
-#define METRO_STEPPER_INTERVAL 100
+#define METRO_STEPPER_INTERVAL 500
 
 // ================================================================================= //
 
