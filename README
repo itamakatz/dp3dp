@@ -1,1 +1,12 @@
-# ex5
+
+============================================
+README for final engineering project - DP3DP
+============================================
+
+list of submitted directories:
+	- Z-Axis Correction Process - contains all the code uploaded on the Teensy for Z correction.
+	- Slic3er - our slicer for polar printer. Also contains 3D-object gcode files for printing.
+	- Processing Scripts - for work with processing software
+	- Line Detector - for future work - building a robot that follows lines using IR sensors.
+	- Firmware - all the information about Marlin firmware
+	- Dynamic Slic3er - for future work - real time parsing of gcode files. 

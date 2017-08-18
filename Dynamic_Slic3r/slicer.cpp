@@ -125,28 +125,11 @@ void parse(){
 }
 
 
-#include "stacktrace.h"
-
-
-
-
-
-
-void f(){print_stacktrace();}
-void g(){f();}
-void h(){g();}
-
-
 
 
 int main() {
-    h();
-//    FILE* f = fopen(ABSOLUTE_INPUT_PATH, "w");
-//    fprintf(f, "%s\n", "WWWWWWWW");
-//    fclose(f);
-//    std::cout << "Hello, World!" << std::endl;
-//    if (EOF){
-//        cout << "BYE";
-//    }
+    FILE* f = fopen(ABSOLUTE_INPUT_PATH, "w");
+    fprintf(f, "%s\n", "WWWWWWWW");
+    fclose(f);
     return EXIT_SUCCESS;
 }
